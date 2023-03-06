@@ -30,7 +30,7 @@ const provider = new GoogleAuthProvider()
 
 
 
-// export const googleLogin = () => signInWithPopup(auth, provider)
+export const googleLogin = () => signInWithPopup(auth, provider)
 
 
 
