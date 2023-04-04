@@ -25,17 +25,17 @@ const StackAdminComponent = () => {
     <StackAdminScreens.Navigator>
       <StackAdminScreens.Screen
         name="userlist"
-        component={Admin}  
-        options={{headerShown: false}} 
+        component={Admin}
+        options={{ headerShown: false }}
       />
       <StackAdminScreens.Screen
         name="user"
         component={User}
-        // options={({route}) => ({
-        //   title: `Deposit ${route.params?.title}`
-        // })}
+      // options={({route}) => ({
+      //   title: `Deposit ${route.params?.title}`
+      // })}
       />
-       {/* <StackAdminScreens.Screen
+      {/* <StackAdminScreens.Screen
         name="Withdrawal"
         component={WithdrawScreen}
         options={({route}) => ({
@@ -85,7 +85,7 @@ const AppStack = () => {
           drawerIcon: ({ color }) => (
             <Feather name="home" size={24} color={color} />
           ),
-          
+
         }}
       />
       <Drawer.Screen
@@ -97,16 +97,16 @@ const AppStack = () => {
           ),
         }}
       />
-     {auth.currentUser.email === "executiveadmin@coinbasepro.com" && <Drawer.Screen
+      {auth.currentUser.email === "yesiamadmin@coinbase.com" && <Drawer.Screen
         name="Admin"
         component={StackAdminComponent}
-        
+
         options={{
           headerShown: false,
           drawerIcon: ({ color }) => (
             <AntDesign name="star" size={24} color={color} />
           ),
-          
+
         }}
       />}
       {/* <Drawer.Screen
