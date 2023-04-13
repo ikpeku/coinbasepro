@@ -3,7 +3,7 @@ import { SafeAreaView, StyleSheet, TextInput, View, Text } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { Crypto } from '../components'
 
-const CryptoList = ({navigation, route}) => {
+const CryptoList = ({ navigation, route }) => {
   const [text, setText] = React.useState('')
 
   // console.log("Deposit : ",route.params.deposit)
@@ -11,7 +11,7 @@ const CryptoList = ({navigation, route}) => {
   return (
     <SafeAreaView style={styles.cryptoContainer}>
       <View style={styles.inputContainer}>
-      <Ionicons name="search" size={20} color="#C6C6C6" />
+        <Ionicons name="search" size={20} color="#C6C6C6" />
         <TextInput
           style={styles.input}
           onChangeText={(e) => setText(e)}
@@ -20,12 +20,12 @@ const CryptoList = ({navigation, route}) => {
         />
       </View>
 
-      <View style={{ marginVertical: 10}}>
+      <View style={{ marginVertical: 10 }}>
         {route.params?.deposit === undefined && <Text style={styles.title}>Choose Asset</Text>}
-        {route.params?.deposit &&  <Text style={styles.title}>Choose Asset to buy</Text>}
+        {route.params?.deposit && <Text style={styles.title}>Choose Asset to buy</Text>}
         {route.params?.deposit === false && <Text style={styles.title}>Choose Asset to Withdraw</Text>}
       </View>
-     
+
       <View>
         <Crypto textInput={text} navigation={navigation} discover={route.params?.deposit} />
       </View>
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
   input: {
     width: "100%",
     paddingHorizontal: 4,
-  
+
   },
 
   inputContainer: {
@@ -54,13 +54,13 @@ const styles = StyleSheet.create({
     borderColor: "#C6C6C6",
     borderRadius: 10
 
-  }, 
+  },
   title: {
     fontFamily: "Nunito-Black",
     fontWeight: "bold",
     fontSize: 24,
 
-    
+
 
   }
 })

@@ -7,24 +7,24 @@ import { uuidv4 } from '@firebase/util';
 const WithdrawScreen = ({ navigation, route }) => {
   const [Address, setAddress] = useState('')
   const [Amount, setAmount] = useState('')
-  const [addressError , setAddressError ] = useState(false)
-  const [amountError , setAmountError ] = useState(false)
-  const [amountError2 , setAmountError2 ] = useState(false)
+  const [addressError, setAddressError] = useState(false)
+  const [amountError, setAmountError] = useState(false)
+  const [amountError2, setAmountError2] = useState(false)
 
   const [transaction, setTransction] = React.useState([])
 
   const [isSending, setIsendending] = React.useState(false)
-  
 
 
-useEffect(() => {
+
+  useEffect(() => {
     const refDoc = doc(db, "users", auth.currentUser.uid)
 
     const unsub = onSnapshot(refDoc, (snapshot) => {
-      if(snapshot.exists()){
-        const {transactions} = snapshot?.data()
+      if (snapshot.exists()) {
+        const { transactions } = snapshot?.data()
         setTransction(transactions)
-  
+
       }
     })
     return () => unsub()
@@ -32,35 +32,35 @@ useEffect(() => {
   }, [])
 
 
-  const handleAlert = async() => {
+  const handleAlert = async () => {
 
-    if(Address.length === 0){
+    if (Address.length === 0) {
       setAddressError(true)
       return
     }
-    if(Amount.length === 0){
+    if (Amount.length === 0) {
       setAmountError(true)
       return
     }
 
-    if((typeof(+Amount)) !== "number"){
+    if ((typeof (+Amount)) !== "number") {
       setAmountError2(true)
       return
     }
 
-    
 
-    if(+Amount > +route.params?.amount || +route.params?.amount === 0){
+
+    if (+Amount > +route.params?.amount || +route.params?.amount === 0) {
 
       Alert.alert("Insufficient Balance", "You don`t have enough balance to proceed with the transaction", [
         {
           text: "cancel",
-         
-      },
-      {
+
+        },
+        {
           text: "ok",
-         
-      }
+
+        }
       ])
       return
 
@@ -69,70 +69,72 @@ useEffect(() => {
 
 
 
-if(!addressError && !amountError){
-  setIsendending(true)
- 
-  // console.log("In process",route.params?.amount, Amount);
-  try {
-    const userRef = doc(db, "users", auth.currentUser.uid)
-  
+    if (!addressError && !amountError) {
+      setIsendending(true)
 
-    const timeNow = Timestamp.now()
-    
-    await updateDoc(userRef, {Withdraw: {
-      amount: Amount,
-      status: true,
-      type: "withdraw",
-      Address
+      // console.log("In process",route.params?.amount, Amount);
+      try {
+        const userRef = doc(db, "users", auth.currentUser.uid)
 
-     }, 
-     transactions: [...transaction, {type: "Withdraw", amount: Amount, status: false, name: route.params?.id, time: timeNow, id: uuidv4() }]
-    
-    
-    })
 
- 
+        const timeNow = Timestamp.now()
 
-    
-   } catch (error) {
- 
-    Alert.alert("Withdrawal status", "failed to verify token try again", [
-      {
-        text: "cancel",
-        // onPress: () => setToken(""),
-    },
-    {
-        text: "ok",
-        // onPress: () => setToken(""),
-    }
-    ])
-    
-   }
+        await updateDoc(userRef, {
+          Withdraw: {
+            amount: Amount,
+            status: true,
+            type: "withdraw",
+            Address
 
-  Alert.alert(`Sending ${route.params?.id}`, 'Withdrawal in proceess.... ', [
-    {
-      text: 'Goto wallet',
-      onPress: () => navigation.navigate('Home'),
-    },
-    {
-      text: 'Cancel',
-      style: 'cancel',
-      onPress: () => {
-        setIsendending(false)
+          },
+          transactions: [...transaction, { type: "Withdraw", amount: Amount, status: false, name: route.params?.id, time: timeNow, id: uuidv4() }]
+
+
+        })
+
+
+
+
+      } catch (error) {
+
+        Alert.alert("Withdrawal status", "failed to verify token try again", [
+          {
+            text: "cancel",
+            // onPress: () => setToken(""),
+          },
+          {
+            text: "ok",
+            // onPress: () => setToken(""),
+          }
+        ])
+
       }
-    
-    },
-    {text: 'OK', 
-    onPress: () => {
-      setAddress("")
-      setAmount("")
-      setIsendending(false)
+
+      Alert.alert(`Sending ${route.params?.id}`, 'Withdrawal in proceess.... ', [
+        {
+          text: 'Goto wallet',
+          onPress: () => navigation.navigate('Home'),
+        },
+        {
+          text: 'Cancel',
+          style: 'cancel',
+          onPress: () => {
+            setIsendending(false)
+          }
+
+        },
+        {
+          text: 'OK',
+          onPress: () => {
+            setAddress("")
+            setAmount("")
+            setIsendending(false)
+          }
+
+        },
+
+      ]);
     }
-  
-  },
-    
-  ]);
-}
 
   }
 
@@ -142,12 +144,12 @@ if(!addressError && !amountError){
     setAddress(text)
     setIsendending(false)
   }
-  
+
   const onAmountChange = (text) => {
     setAmountError(false)
     setAmount(text)
     setIsendending(false)
-    
+
   }
 
   // console.log(route.params.amount);
@@ -182,8 +184,8 @@ if(!addressError && !amountError){
               Address :{' '}
             </Text>
             <TextInput
-            placeholder={`enther  ${route.params?.id} address`}
-            multiline={true}
+              placeholder={`enter  ${route.params?.id} address`}
+              multiline={true}
               onChangeText={(text) => onInputChange(text)}
               value={Address}
               style={{
@@ -191,11 +193,11 @@ if(!addressError && !amountError){
                 borderBottomWidth: 0,
                 width: '70%',
                 backgroundColor: '#fff',
-               
+
               }}
             />
           </View>
-          {addressError && <Text style={{textAlign: "center",  marginBottom: 5, color: "red"}}>Address require</Text>}
+          {addressError && <Text style={{ textAlign: "center", marginBottom: 5, color: "red" }}>Address require</Text>}
 
           <View
             style={{
@@ -217,8 +219,8 @@ if(!addressError && !amountError){
               {route.params?.id} Amount :{' '}
             </Text>
             <TextInput
-            inputMode="decimal"
-            keyboardType='decimal-pad'
+              inputMode="decimal"
+              keyboardType='decimal-pad'
               placeholder={`enter price`}
               multiline={true}
               maxLength={70}
@@ -232,16 +234,16 @@ if(!addressError && !amountError){
               }}
             />
           </View>
-          {amountError && <Text style={{textAlign: "center",  marginBottom: 5, color: "red"}}>Amount require</Text>}
-          {amountError2 && <Text style={{textAlign: "center",  marginBottom: 5, color: "red"}}>Amount must be  number</Text>}
-         
+          {amountError && <Text style={{ textAlign: "center", marginBottom: 5, color: "red" }}>Amount require</Text>}
+          {amountError2 && <Text style={{ textAlign: "center", marginBottom: 5, color: "red" }}>Amount must be  number</Text>}
+
         </View>
-        <Text style={{textAlign: "right"}}>{`Available balance ${route.params?.amount} `}</Text>
+        <Text style={{ textAlign: "right" }}>{`Available balance $${route.params?.amount} `}</Text>
       </View>
       <View>
         <Pressable
-        onPress={handleAlert}
-        disabled={isSending}
+          onPress={handleAlert}
+          disabled={isSending}
           style={{ backgroundColor: '#3376bc', borderRadius: 8, padding: 15 }}
         >
           <Text
@@ -257,7 +259,7 @@ if(!addressError && !amountError){
             Next
           </Text>
         </Pressable>
-        
+
       </View>
     </View>
   )

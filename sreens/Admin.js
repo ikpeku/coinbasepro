@@ -12,6 +12,10 @@ const Admin = ({ navigation }) => {
   const [isLoading, setIsLoding] = useState(false)
 
 
+
+
+
+
   useEffect(() => {
     const fetchUser = async () => {
       setIsLoding(true)
@@ -36,6 +40,8 @@ const Admin = ({ navigation }) => {
         setIsLoding(false)
 
       } catch (error) {
+
+
 
       }
 

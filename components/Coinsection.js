@@ -6,9 +6,9 @@ import TxnHistory from './TxnHistory'
 const Coinsection = () => {
   return (
     <View style={styles.coinContainer}>
-   
-        <CoinNav/>
-        <TxnHistory />
+
+      <CoinNav />
+      <TxnHistory />
     </View>
   )
 }
@@ -16,11 +16,10 @@ const Coinsection = () => {
 export default Coinsection
 
 const styles = StyleSheet.create({
-    coinContainer: {
-      flex: 2,
-      backgroundColor: '#fff',
-      // alignItems: 'center',
-      // justifyContent: 'center',
-    },
-  })
-  
+  coinContainer: {
+    flex: 2,
+    backgroundColor: '#fff',
+    // alignItems: 'center',
+    // justifyContent: 'center',
+  },
+})

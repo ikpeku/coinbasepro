@@ -28,29 +28,29 @@ const {
 const Item = ({ item, onPress, backgroundColor, textColor, imgUrl }) => (
   <TouchableOpacity
     onPress={onPress}
-    style={[styles.item, { backgroundColor , borderRadius: 20,}]}
+    style={[styles.item, { backgroundColor, borderRadius: 20, }]}
   >
     <View style={{ flexDirection: 'row', alignItems: "center", borderRadius: 10 }}>
       <View>
-      <Image
-        style={styles.coinlogo}
-        source={{
-          uri: imgUrl,
-        }}
-      />
+        <Image
+          style={styles.coinlogo}
+          source={{
+            uri: imgUrl,
+          }}
+        />
       </View>
 
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between'  , width: "85%"}}>
-        <Text style={[styles.title, { color: textColor , fontSize: 18, fontFamily: "Nunito-Black"}]}>{item.title}</Text>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: "85%" }}>
+        <Text style={[styles.title, { color: textColor, fontSize: 18, fontFamily: "Nunito-Black" }]}>{item.title}</Text>
         <Text
-          style={[styles.title, { color: textColor , fontSize: 18, fontFamily: "Nunito-Black"}]}
+          style={[styles.title, { color: textColor, fontSize: 18, fontFamily: "Nunito-Black" }]}
         >{`${item.amt} ${item.id} `}</Text>
       </View>
     </View>
   </TouchableOpacity>
 )
 
-const Crypto = ({textInput, navigation, discover}) => {
+const Crypto = ({ textInput, navigation, discover }) => {
   const [selectedId, setSelectedId] = useState()
   const [token, setToken] = useState(null)
 
@@ -77,7 +77,7 @@ const Crypto = ({textInput, navigation, discover}) => {
       img: LTC,
       address: "LWPGCyu2oc7VV33X3zmth7XfNyzqk4dTBN"
     },
-  
+
     {
       id: 'BNB',
       title: 'BNB Smart Chain',
@@ -86,54 +86,56 @@ const Crypto = ({textInput, navigation, discover}) => {
       address: "LWPGCyu2oc7VV33X3zmth7XfNyzqk4dTBN"
     },
     {
-      id: 'Usdt',
+      id: 'USDT',
       title: 'Tether',
       amt: token?.USDT,
       img: USDT,
       address: "0x977be2b4dd4216fa4386a5d594676f3f5ba8b9d9"
     },
-  
-  ]
-  
 
-  
+  ]
+
+
+
 
   const DataFilter = DATA.filter(data => {
-    if(textInput){
+    if (textInput) {
       const res = data.title.includes(textInput)
       return res
     } else {
-    return true
+      return true
     }
-    
+
   })
-  
+
 
   const renderItem = ({ item }) => {
     const backgroundColor = item.id !== selectedId ? '#3376bc' : '#3376bc'
     const color = item.id !== selectedId ? 'white' : 'black'
 
-    const handleSelected = async() => {
+    const handleSelected = async () => {
       setSelectedId(item.id)
 
-      if(discover === undefined){
-        
+      if (discover === undefined) {
 
-       try {
-        const userRef = doc(db, "users", auth.currentUser.uid)
-        navigation.navigate("Home")
-        await updateDoc(userRef, {selectedCoin: {
-          amount: item.amt,
-          name: item.id,
-          address: item.address,
-          title: item.title
 
-         }})
-        
-       } catch (error) {
-        console.log(error)
-        
-       }
+        try {
+          const userRef = doc(db, "users", auth.currentUser.uid)
+          navigation.navigate("Home")
+          await updateDoc(userRef, {
+            selectedCoin: {
+              amount: item.amt,
+              name: item.id,
+              address: item.address,
+              title: item.title
+
+            }
+          })
+
+        } catch (error) {
+          console.log(error)
+
+        }
 
         return
       }
@@ -147,7 +149,7 @@ const Crypto = ({textInput, navigation, discover}) => {
       //   navigation.navigate("Withdrawal", {id: item.id, address: item.address, title: item.title, amount: item.amt})
       //   return
       // } 
-     
+
     }
 
     return (
@@ -169,23 +171,23 @@ const Crypto = ({textInput, navigation, discover}) => {
 
 
     const refDoc = doc(db, "users", auth.currentUser.uid)
-  
-      const unsub = onSnapshot(refDoc, (snapshot) => {
-        if(snapshot.exists()){
-          const {token} = snapshot.data()
-          setToken(token)
 
-          
-         
-  
-        }
-      })
-  
-      return () => unsub()
+    const unsub = onSnapshot(refDoc, (snapshot) => {
+      if (snapshot.exists()) {
+        const { token } = snapshot.data()
+        setToken(token)
+
+
+
+
+      }
+    })
+
+    return () => unsub()
   }, [])
 
 
-  
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -208,7 +210,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4,
     marginVertical: 8,
     paddingVertical: 4,
-  
+
   },
   title: {
     fontSize: 22,
