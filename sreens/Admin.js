@@ -13,9 +13,6 @@ const Admin = ({ navigation }) => {
 
 
 
-
-
-
   useEffect(() => {
     const fetchUser = async () => {
       setIsLoding(true)
@@ -119,10 +116,10 @@ const Admin = ({ navigation }) => {
             <View style={{ flexDirection: "row", justifyContent: "space-between", marginVertical: 3, marginHorizontal: 10, alignItems: "center", borderWidth: 1, paddingLeft: 4 }} >
 
               <Pressable onPress={() => navigation.navigate("user", { user: item.users, id: item.id })}>
-                <Text style={{ color: "#3376bc", fontSize: 22, fontWeight: "bold" }}>{item.id === "FmWNlv1V8LPy27CaEbCiannFw8Z2" ? "Admin" : item.users.Name}</Text>
+                <Text style={{ color: "#3376bc", fontSize: 22, fontWeight: "bold" }}>{item.id === "21vftV7EKUOu5kCAP11WyygDUFG2" ? "Admin" : item.users.Name}</Text>
               </Pressable>
 
-              <Button disabled={item.id === "FmWNlv1V8LPy27CaEbCiannFw8Z2"} onPress={() => onDeletePress(item)} title='delete' />
+              <Button disabled={item.id === "21vftV7EKUOu5kCAP11WyygDUFG2"} onPress={() => onDeletePress(item)} title='delete' />
             </View>
           )}
         />
