@@ -43,7 +43,7 @@ const TxnHistory = () => {
                   <MaterialCommunityIcons name="call-made" size={24} color="red" />}
 
 
-                <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginLeft: 4 }}>
+                <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginLeft: 2 }}>
 
                   <View>
                     <Text style={{ padding: 5, color: "#3376bc", fontWeight: "bold", fontSize: 16 }}>{item.type}</Text>

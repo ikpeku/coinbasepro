@@ -9,7 +9,6 @@ import { FlashList } from '@shopify/flash-list';
 const User = ({ route }) => {
 
   const [data, setData] = useState([])
-  const [isLoading, setIsLoading] = useState(false)
   const { Name, accountName, DOB, Email, Register, accountNumber, bankName, licence, passport, phoneNumber, licenceBack, swiftCode, Deposit, Withdraw, selectedCoin, transactions, token } = data
 
   const sortTransaction = transactions?.sort((a, b) => a.time < b.time)
@@ -118,7 +117,6 @@ const User = ({ route }) => {
 
 
   const setTransList = async (item) => {
-    setIsLoading(true)
 
     // update transction list
     const newList = [...transactions]
@@ -126,49 +124,49 @@ const User = ({ route }) => {
     newList[req] = { ...newList[req], status: true }
     const userRef = doc(db, "users", route?.params?.id)
 
-    if (isLoading) {
 
-      try {
-        await updateDoc(userRef, {
-          transactions: newList
-        })
 
-        if (item.name === selectedCoin.name) {
-          if (item.type === "deposit") {
-            await updateDoc(userRef, {
-              selectedCoin: {
-                ...selectedCoin,
-                amount: +selectedCoin.amount + +item.amount,
-              }
-            })
-          } else {
-            await updateDoc(userRef, {
-              selectedCoin: {
-                ...selectedCoin,
-                amount: +selectedCoin.amount - +item.amount,
-              }
-            })
-          }
+    try {
+      await updateDoc(userRef, {
+        transactions: newList
+      })
 
+      if (item.name === selectedCoin.name) {
+        if (item.type === "deposit") {
+          await updateDoc(userRef, {
+            selectedCoin: {
+              ...selectedCoin,
+              amount: +selectedCoin.amount + +item.amount,
+            }
+          })
+        } else {
+          await updateDoc(userRef, {
+            selectedCoin: {
+              ...selectedCoin,
+              amount: +selectedCoin.amount - +item.amount,
+            }
+          })
         }
 
-
-        const newToken = { ...token }
-        newToken[item.name] = item.type === "deposit" ? +newToken[item.name] + +item.amount : +newToken[item.name] - +item.amount
-        await updateDoc(userRef, {
-          token: {
-            ...newToken
-          }
-        })
-
-        Alert.alert("done")
-      } catch (error) {
-        Alert.alert("error occurred try again")
-      } finally {
-        setIsLoading(false)
       }
+
+
+      const newToken = { ...token }
+      newToken[item.name] = item.type === "deposit" ? +newToken[item.name] + +item.amount : +newToken[item.name] - +item.amount
+      await updateDoc(userRef, {
+        token: {
+          ...newToken
+        }
+      })
+
+      Alert.alert("done")
+
+    } catch (error) {
+      Alert.alert("error occurred try again")
+
     }
-    if (!isLoading) return
+
+
   }
 
 
