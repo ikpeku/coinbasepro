@@ -1,11 +1,12 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { View, Text, TextInput, TouchableOpacity, ScrollView, Image } from 'react-native'
-import { sendEmailVerification, updateEmail, updatePhoneNumber, updateProfile } from 'firebase/auth'
-import { updateDoc, doc, getDoc, onSnapshot } from 'firebase/firestore'
+import { updateProfile } from 'firebase/auth'
+import { updateDoc, doc, getDoc, onSnapshot, Timestamp } from 'firebase/firestore'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { auth, db } from '../firebase/firebaseConfig'
 import { getStorage, ref, uploadBytesResumable, getDownloadURL, uploadBytes } from "firebase/storage";
 import Toast from 'react-native-root-toast';
+
 
 import * as ImagePicker from 'expo-image-picker';
 // import { uuid } from 'uuidv4';
@@ -60,6 +61,7 @@ const ProfileScreen = () => {
       }
 
       await updateDoc(userRef, { bankName, accountNumber, accountName, swiftCode })
+      await updateDoc(userRef, { DOB: Timestamp.fromDate(new Date(DOB)) })
 
 
     } catch (error) {
@@ -164,11 +166,11 @@ const ProfileScreen = () => {
 
   const handleImagesSubmit = async () => {
 
-    if (!passport && !licence && !licenceBack) {
-      setUploadError(true)
+    // if (!passport && !licence && !licenceBack) {
+    //   setUploadError(true)
 
-      return
-    }
+    //   return
+    // }
     setUploadError(false)
     const userRef = doc(db, "users", auth.currentUser?.uid)
     const getPassport = passport
@@ -177,33 +179,39 @@ const ProfileScreen = () => {
 
     try {
 
-      // passport
-      const response = await fetch(getPassport);
-      const blobFile = await response.blob();
-      const passportfile = `${auth.currentUser?.displayName}-${passport}`
-      const reference = ref(getStorage(), passportfile)
-      await uploadBytesResumable(reference, blobFile)
-      const downloadURL = await getDownloadURL(reference);
-      await updateDoc(userRef, { passport: downloadURL })
+      if (getPassport) {
+        // passport
+        const response = await fetch(getPassport);
+        const blobFile = await response.blob();
+        const passportfile = `${auth.currentUser?.displayName}-${passport}`
+        const reference = ref(getStorage(), passportfile)
+        await uploadBytesResumable(reference, blobFile)
+        const downloadURL = await getDownloadURL(reference);
+        await updateDoc(userRef, { passport: downloadURL })
+      }
 
-      // licence
-      const responseL = await fetch(getLicence);
-      const blobFileL = await responseL.blob();
-      const passportfileL = `${auth.currentUser?.displayName}-${licence}`
-      const referenceL = ref(getStorage(), passportfileL)
-      await uploadBytesResumable(referenceL, blobFileL)
-      const downloadURLL = await getDownloadURL(referenceL);
-      await updateDoc(userRef, { licence: downloadURLL })
+      if (getLicence) {
+        // licence
+        const responseL = await fetch(getLicence);
+        const blobFileL = await responseL.blob();
+        const passportfileL = `${auth.currentUser?.displayName}-${licence}`
+        const referenceL = ref(getStorage(), passportfileL)
+        await uploadBytesResumable(referenceL, blobFileL)
+        const downloadURLL = await getDownloadURL(referenceL);
+        await updateDoc(userRef, { licence: downloadURLL })
+      }
 
 
-      // licenceBack
-      const responseLB = await fetch(getLicenceBack);
-      const blobFileLB = await responseLB.blob();
-      const passportfileLB = `${auth.currentUser?.displayName}-${licenceBack}`
-      const referenceLB = ref(getStorage(), passportfileLB)
-      await uploadBytesResumable(referenceLB, blobFileLB)
-      const downloadURLLB = await getDownloadURL(referenceLB);
-      await updateDoc(userRef, { licenceBack: downloadURLLB })
+      if (getLicenceBack) {
+        // licenceBack
+        const responseLB = await fetch(getLicenceBack);
+        const blobFileLB = await responseLB.blob();
+        const passportfileLB = `${auth.currentUser?.displayName}-${licenceBack}`
+        const referenceLB = ref(getStorage(), passportfileLB)
+        await uploadBytesResumable(referenceLB, blobFileLB)
+        const downloadURLLB = await getDownloadURL(referenceLB);
+        await updateDoc(userRef, { licenceBack: downloadURLLB })
+      }
 
 
 

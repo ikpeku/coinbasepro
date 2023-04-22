@@ -321,16 +321,16 @@ const User = ({ route }) => {
 
             data={sortTransaction}
             renderItem={({ item }) => (
-              <Pressable disabled={item.status} onPress={() => setTransList(item)} style={{ flexDirection: "row", justifyContent: "space-between", marginVertical: 3, marginHorizontal: 10, alignItems: "center", borderWidth: 1, paddingHorizontal: 4, minHeight: 16 }} >
-                <Text style={{ color: "#3376bc", fontSize: 22, fontWeight: "bold" }}>{item?.name}</Text>
-                <Text style={{ color: "#3376bc", fontSize: 16 }}>${item?.amount}</Text>
-                <Text style={{ color: "#3376bc", fontSize: 16 }}>{item?.type}</Text>
-                <Text style={{ color: "#3376bc", fontSize: 18 }}>{item?.status ? "approved" : "pending"}</Text>
-                {/* <Pressable onPress={() => navigation.navigate("user", { user: item.users, id: item.id })}>
-                <Text style={{ color: "#3376bc", fontSize: 22, fontWeight: "bold" }}>{item.id === "FmWNlv1V8LPy27CaEbCiannFw8Z2" ? "Admin" : item.users.Name}</Text>
-              </Pressable>
+              <Pressable disabled={item.status} onPress={() => setTransList(item)} style={{ flexDirection: "column", justifyContent: "space-between", marginVertical: 5, marginHorizontal: 10, borderWidth: 1, paddingHorizontal: 4, minHeight: 16 }} >
 
-              <Button disabled={item.id === "FmWNlv1V8LPy27CaEbCiannFw8Z2"} onPress={() => onDeletePress(item)} title='delete' /> */}
+                <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", }}>
+                  <Text style={{ color: "#3376bc", fontSize: 22, fontWeight: "bold" }}>{item?.name}</Text>
+                  <Text style={{ color: "#3376bc", fontSize: 16 }}>${item?.amount}</Text>
+                  <Text style={{ color: "#3376bc", fontSize: 16 }}>{item?.type}</Text>
+                  <Text style={[{ fontSize: 18 }, item.status ? { color: "green", } : { color: "red" }]}>{item?.status ? "approved" : "pending"}</Text>
+                </View>
+                {item.Address && <Text style={{ color: "#3376bc", fontSize: 18 }}>Address: {item?.Address}</Text>}
+
               </Pressable>
             )}
           />

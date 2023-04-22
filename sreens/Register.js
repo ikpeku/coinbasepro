@@ -4,12 +4,13 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { FontAwesome, FontAwesome5, Entypo, AntDesign } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { CreateWithEmail } from '../firebase/firebaseConfig';
+import { Timestamp } from 'firebase/firestore';
 
 const RegisterScreen = ({ navigation }) => {
   const [showPassword, setShowPassword] = useState(true)
   const [isLoading, setIsLoading] = useState(false)
 
-  const [date, setDate] = useState(new Date());
+  const [newdate, setDate] = useState("2015/01/01");
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
 
@@ -53,17 +54,20 @@ const RegisterScreen = ({ navigation }) => {
   const handleRegisterUser = async () => {
     setIsLoading(true)
     let currentDate = new Date()
-    if (date === currentDate.toLocaleDateString()) {
+    if (newdate === currentDate.toLocaleDateString()) {
       Alert.alert("Date of birth is too low")
       // return
     }
-    if (!password && !email && !fullName && !date) {
+    if (!password && !email && !fullName && !newdate) {
       Alert.alert("ALl field required")
     }
+
+    const date = Timestamp.fromDate(new Date(newdate))
 
     await CreateWithEmail(email, password, fullName, date)
     setIsLoading(false)
   }
+
 
 
   if (isLoading) {
@@ -73,6 +77,7 @@ const RegisterScreen = ({ navigation }) => {
       </View>
     )
   }
+
 
 
   return (
@@ -114,7 +119,7 @@ const RegisterScreen = ({ navigation }) => {
                 {/* <TextInput placeholder="D.O.B." style={{width: "100%",  padding: 4}} autoCorrect inputMode="text" /> */}
 
                 <TouchableOpacity activeOpacity={0.6} style={{ marginLeft: 5, width: "85%", }} onPress={showDatepicker}>
-                  <Text style={{ color: "#000", fontSize: 15, fontWeight: "bold", fontFamily: "Nunito-Medium", }}>{date.toLocaleString()}</Text>
+                  <Text style={{ color: "#000", fontSize: 15, fontWeight: "bold", fontFamily: "Nunito-Medium", }}>{newdate.toLocaleString()}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity activeOpacity={0.6} onPress={showDatepicker}>
                   <AntDesign name="calendar" size={24} color="#3376bc" />
@@ -124,7 +129,7 @@ const RegisterScreen = ({ navigation }) => {
                   {show && (
                     <DateTimePicker
                       testID="dateTimePicker"
-                      value={date}
+                      value={new Date()}
                       mode={mode}
                       dateFormat="dayofweek day month"
                       dayOfWeekFormat={'{dayofweek.abbreviated(2)}'}

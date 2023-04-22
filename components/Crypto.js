@@ -90,7 +90,7 @@ const Crypto = ({ textInput, navigation, discover }) => {
       title: 'Tether',
       amt: token?.USDT,
       img: USDT,
-      address: "0x977be2b4dd4216fa4386a5d594676f3f5ba8b9d9"
+      address: "TUPqzJLsE1ge3AMgGrZpubLD2cWX2Xqgu1"
     },
 
   ]

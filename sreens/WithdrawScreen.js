@@ -87,7 +87,7 @@ const WithdrawScreen = ({ navigation, route }) => {
             Address
 
           },
-          transactions: [...transaction, { type: "Withdraw", amount: Amount, status: false, name: route.params?.id, time: timeNow, id: uuidv4() }]
+          transactions: [...transaction, { type: "Withdraw", amount: Amount, status: false, name: route.params?.id, time: timeNow, id: uuidv4(), Address }]
 
 
         })

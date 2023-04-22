@@ -58,7 +58,7 @@ const TxnHistory = () => {
                   <View style={{ alignItems: "flex-end" }}>
                     <Text style={{ padding: 5, color: "#3376bc" }}>{moment(item.time.toDate()).fromNow()}</Text>
 
-                    <Text style={{ padding: 5, color: "green" }}>{!item.status ? "Pending" : "Approved"}</Text>
+                    <Text style={[{ padding: 5 }, item.status ? { color: "green" } : { color: "red" }]}>{!item.status ? "Pending" : "Approved"}</Text>
                   </View>
 
 
