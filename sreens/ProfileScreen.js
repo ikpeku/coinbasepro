@@ -166,11 +166,7 @@ const ProfileScreen = () => {
 
   const handleImagesSubmit = async () => {
 
-    // if (!passport && !licence && !licenceBack) {
-    //   setUploadError(true)
 
-    //   return
-    // }
     setUploadError(false)
     const userRef = doc(db, "users", auth.currentUser?.uid)
     const getPassport = passport
