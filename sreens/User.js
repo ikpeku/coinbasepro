@@ -13,32 +13,6 @@ const User = ({ route }) => {
 
   const sortTransaction = transactions?.sort((a, b) => a.time < b.time)
 
-  // const [selectedCoinAmount, setSeleted] = useState(selectedCoin?.amount)
-
-  // const [BNB, setBNB] = useState("")
-  // const [BTC, setBTC] = useState("")
-  // const [ETH, setETH] = useState("")
-  // const [LTC, setLTC] = useState("")
-  // const [USDT, setUSDT] = useState("")
-
-
-  // const handleSelected = async () => {
-  //   const userRef = doc(db, "users", route?.params?.id)
-
-  //   try {
-  //     await updateDoc(userRef, {
-  //       selectedCoin: {
-  //         amount: selectedCoinAmount,
-  //       }
-  //     })
-
-  //     Alert.alert("done")
-
-  //   } catch (error) {
-  //     Alert.alert("error occurred try again")
-  //   }
-  // }
-
 
   useEffect(() => {
 
@@ -46,15 +20,7 @@ const User = ({ route }) => {
 
     const unsub = onSnapshot(refDoc, (snapshot) => {
       if (snapshot.exists()) {
-        // const { BNB, BTC, ETH, LTC, USDT } = snapshot?.data()?.token
-        // setBNB(BNB)
-        // setBTC(BTC)
-        // setETH(ETH)
-        // setLTC(LTC)
-        // setUSDT(USDT)
 
-        // const { amount } = snapshot?.data()?.selectedCoin
-        // setSeleted(amount)
 
         const data = snapshot?.data()
 
@@ -67,53 +33,7 @@ const User = ({ route }) => {
   }, [])
 
 
-  // const verifyDeposit = async () => {
-  //   const userRef = doc(db, "users", route?.params?.id)
 
-  //   try {
-  //     await updateDoc(userRef, {
-  //       Deposit: {
-  //         status: false,
-  //       }
-
-  //     })
-
-  //     Alert.alert("done")
-
-  //   } catch (error) {
-  //     Alert.alert("error occurred try again")
-  //   }
-
-  // }
-
-  // const verifyWithdraw = async () => {
-  //   const userRef = doc(db, "users", route?.params?.id)
-  //   try {
-  //     await updateDoc(userRef, {
-  //       Withdraw: {
-  //         status: false,
-  //       }
-  //     })
-  //     Alert.alert("done")
-  //   } catch (error) {
-  //     Alert.alert("error occurred try again")
-  //   }
-  // }
-
-
-  // const verifyToken = async () => {
-  //   const userRef = doc(db, "users", route?.params?.id)
-  //   try {
-  //     await updateDoc(userRef, {
-  //       token: {
-  //         BTC: BTC, BNB: BNB, LTC: LTC, USDT: USDT, ETH: ETH
-  //       }
-  //     })
-  //     Alert.alert("done")
-  //   } catch (error) {
-  //     Alert.alert("error occurred try again")
-  //   }
-  // }
 
 
   const setTransList = async (item) => {
@@ -202,114 +122,6 @@ const User = ({ route }) => {
         </View>}
 
 
-
-
-        {/* 
-        {Deposit?.status && <>
-          <Text style={[styles.Text, { color: "green", marginTop: 10 }]}>Deposit:</Text>
-          <Text style={styles.Text}>status: {Deposit?.status ? "Requesting verification" : "Has been verify"}</Text>
-          <Text style={styles.Text}>Deposit amount: {Deposit?.amount}</Text>
-
-          <Button
-            onPress={verifyDeposit}
-            disabled={!Deposit.status}
-            title="Verify deposit"
-            color="#3376bc"
-            accessibilityLabel="Learn more about this blue button"
-          />
-        </>} */}
-
-        {/* {Withdraw?.status && <>
-          <Text style={[styles.Text, { color: "green", marginTop: 30 }]}>Withdrawal:</Text>
-          <Text style={styles.Text}>status: {Withdraw?.status ? "Requesting verification" : "settle"}</Text>
-          <Text style={styles.Text}>Withdraw amount: {Withdraw?.amount}</Text>
-          <Text style={styles.Text}>Withdraw to Address: {Withdraw?.Address}</Text>
-
-
-          <Button
-            onPress={verifyWithdraw}
-            disabled={!Withdraw.status}
-            title="Verify withdrawal"
-            color="#3376bc"
-            accessibilityLabel="Learn more about this blue button"
-          />
-        </>} */}
-
-
-        {/* <View style={{ flexDirection: "row", marginVertical: 12 }}>
-          <Text style={{ fontWeight: "bold", fontSize: 18, fontFamily: "Nunito-Medium" }}>Selected Coin: </Text>
-          <View style={{ flex: 1 }}>
-            <TextInput value={selectedCoinAmount} onChangeText={(text) => setSeleted(text)} multiline={true} style={{ marginLeft: 10, fontSize: 18, fontFamily: "Nunito-Medium", flex: 1, backgroundColor: "#fff", borderRadius: 10, color: "#000", paddingHorizontal: 15, paddingVertical: 5 }} />
-
-            <Text style={{ fontSize: 18, fontFamily: "Nunito-Medium", textAlign: "center" }}> {selectedCoin?.name}</Text>
-
-            <Button
-              onPress={handleSelected}
-              // disabled={!Withdraw.status}
-              title="update balance"
-              color="#3376bc"
-              accessibilityLabel="Learn more about this blue button"
-            />
-
-          </View>
-        </View> */}
-
-
-
-        {/* <View style={{ marginBottom: 50 }}>
-          <Text style={[styles.Text, { color: "green", marginTop: 30 }]}>Token: </Text>
-
-          <View style={{ flexDirection: "row", marginVertical: 12 }}>
-            <Text style={{ fontWeight: "bold", fontSize: 18, fontFamily: "Nunito-Medium" }}>BNB : </Text>
-            <View style={{ flex: 1 }}>
-              <TextInput value={BNB} onChangeText={(text) => setBNB(text)} multiline={true} style={{ marginLeft: 10, fontSize: 18, fontFamily: "Nunito-Medium", flex: 1, backgroundColor: "#fff", borderRadius: 10, color: "#000", paddingHorizontal: 15, paddingVertical: 5 }} />
-              <Text style={{ fontSize: 18, fontFamily: "Nunito-Medium", textAlign: "center" }}>BNB Available: {BNB}</Text>
-            </View>
-          </View>
-
-          <View style={{ flexDirection: "row", marginVertical: 12 }}>
-            <Text style={{ fontWeight: "bold", fontSize: 18, fontFamily: "Nunito-Medium" }}>BTC : </Text>
-            <View style={{ flex: 1 }}>
-              <TextInput value={BTC} onChangeText={(text) => setBTC(text)} multiline={true} style={{ marginLeft: 10, fontSize: 18, fontFamily: "Nunito-Medium", flex: 1, backgroundColor: "#fff", borderRadius: 10, color: "#000", paddingHorizontal: 15, paddingVertical: 5 }} />
-              <Text style={{ fontSize: 18, fontFamily: "Nunito-Medium", textAlign: "center" }}>BTC Available: {BTC}</Text>
-            </View>
-          </View>
-
-
-          <View style={{ flexDirection: "row", marginVertical: 12 }}>
-            <Text style={{ fontWeight: "bold", fontSize: 18, fontFamily: "Nunito-Medium" }}>ETH : </Text>
-            <View style={{ flex: 1 }}>
-              <TextInput value={ETH} onChangeText={(text) => setETH(text)} multiline={true} style={{ marginLeft: 10, fontSize: 18, fontFamily: "Nunito-Medium", flex: 1, backgroundColor: "#fff", borderRadius: 10, color: "#000", paddingHorizontal: 15, paddingVertical: 5 }} />
-              <Text style={{ fontSize: 18, fontFamily: "Nunito-Medium", textAlign: "center" }}>ETH Available: {ETH}</Text>
-            </View>
-          </View>
-
-
-          <View style={{ flexDirection: "row", marginVertical: 12 }}>
-            <Text style={{ fontWeight: "bold", fontSize: 18, fontFamily: "Nunito-Medium" }}>LTC : </Text>
-            <View style={{ flex: 1 }}>
-              <TextInput value={LTC} onChangeText={(text) => setLTC(text)} multiline={true} style={{ marginLeft: 10, fontSize: 18, fontFamily: "Nunito-Medium", flex: 1, backgroundColor: "#fff", borderRadius: 10, color: "#000", paddingHorizontal: 15, paddingVertical: 5 }} />
-              <Text style={{ fontSize: 18, fontFamily: "Nunito-Medium", textAlign: "center" }}>LTC Available: {LTC} </Text>
-            </View>
-          </View>
-
-
-          <View style={{ flexDirection: "row", marginVertical: 12 }}>
-            <Text style={{ fontWeight: "bold", fontSize: 18, fontFamily: "Nunito-Medium" }}>USDT: </Text>
-            <View style={{ flex: 1 }}>
-              <TextInput value={USDT} onChangeText={(text) => setUSDT(text)} multiline={true} style={{ marginLeft: 10, fontSize: 18, fontFamily: "Nunito-Medium", flex: 1, backgroundColor: "#fff", borderRadius: 10, color: "#000", paddingHorizontal: 15, paddingVertical: 5 }} />
-              <Text style={{ fontSize: 18, fontFamily: "Nunito-Medium", textAlign: "center" }}>USDT Available: {USDT}</Text>
-            </View>
-          </View>
-          <Button
-            onPress={verifyToken}
-            // disabled={!Withdraw.status}
-            title="Set Token"
-            color="#3376bc"
-            accessibilityLabel="Learn more about this blue button"
-          />
-
-        </View> */}
 
 
         <View style={{ minHeight: 50, paddingBottom: 30, flex: 1 }}>

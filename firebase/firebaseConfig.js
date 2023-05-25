@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore, getDoc, setDoc, serverTimestamp, doc } from "firebase/firestore"
+import { getFirestore, setDoc, serverTimestamp, doc } from "firebase/firestore"
 import { Alert } from "react-native"
 
 

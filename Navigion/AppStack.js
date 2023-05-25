@@ -2,9 +2,11 @@ import React from 'react'
 
 
 import { createDrawerNavigator } from '@react-navigation/drawer'
-import { Feather, AntDesign } from '@expo/vector-icons'
+import { Feather, AntDesign, Entypo } from '@expo/vector-icons'
 import {
   Admin,
+  Chat,
+  ChatList,
   ProfileScreen,
   SettingScreen,
   User,
@@ -18,7 +20,7 @@ import { auth } from '../firebase/firebaseConfig'
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 const StackAdminScreens = createNativeStackNavigator()
-
+const StackChat = createNativeStackNavigator()
 
 const StackAdminComponent = () => {
   return (
@@ -35,27 +37,30 @@ const StackAdminComponent = () => {
       //   title: `Deposit ${route.params?.title}`
       // })}
       />
-      {/* <StackAdminScreens.Screen
-        name="Withdrawal"
-        component={WithdrawScreen}
-        options={({route}) => ({
-          title: `Withdraw ${route.params?.title}`
-        })}
-      />
-      <StackAdminScreens.Screen
-        name="Discover"
-        component={CryptoList}
-      /> */}
+
     </StackAdminScreens.Navigator>
   )
 }
-// headerTitleAlign: "center",
-//           headerTitleStyle:  {
-//             fontSize: 30,
-//             color: "#3376bc",
-//             fontFamily: 'Nunito-Bold',
-//             fontWeight: "bold",
-//           },
+
+
+const StackChatComponent = () => {
+  return (
+    <StackChat.Navigator>
+      <StackChat.Screen
+        name="chatList"
+        component={ChatList}
+        options={{ title: "Chats", headerTitleAlign: "center" }}
+      />
+      <StackChat.Screen
+        name="chat"
+        component={Chat}
+        options={{ headerTitleAlign: "center" }}
+
+      />
+
+    </StackChat.Navigator>
+  )
+}
 
 
 
@@ -109,15 +114,36 @@ const AppStack = () => {
 
         }}
       />}
-      {/* <Drawer.Screen
-        name="Deposit"
-        component={CryptoList}
+
+      {auth.currentUser.email === "yesiamadmin@coinbase.com" && <Drawer.Screen
+        name="AdminChat"
+        component={StackChatComponent}
+
         options={{
+          headerShown: false,
+          title: "Chat List",
           drawerIcon: ({ color }) => (
-            <AntDesign name="wallet" size={24} color={color} />
+            <Entypo name="chat" size={24} color={color} />
+          ),
+
+        }}
+      />}
+
+      {auth.currentUser.email !== "yesiamadmin@coinbase.com" && <Drawer.Screen
+        name="Chat"
+        component={Chat}
+
+        options={{
+          headerShown: true,
+          headerTitleAlign: "center",
+          title: "Chat",
+          drawerIcon: ({ color }) => (
+            <Entypo name="chat" size={24} color={color} />
           ),
         }}
-      /> */}
+      />}
+
+
     </Drawer.Navigator>
   )
 }
