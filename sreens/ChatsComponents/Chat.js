@@ -2,14 +2,18 @@ import React, { useState, useEffect } from 'react'
 import { StyleSheet, Text, View, FlatList, TextInput, KeyboardAvoidingView } from 'react-native'
 import { Ionicons } from '@expo/vector-icons';
 import { auth, db } from '../../firebase/firebaseConfig'
+
+
 import {
     addDoc,
     collection,
     doc,
+    getDoc,
     onSnapshot,
     orderBy,
     query,
     setDoc,
+    updateDoc,
 } from "firebase/firestore";
 import moment from 'moment';
 
@@ -22,10 +26,63 @@ const Chat = ({ route }) => {
 
     const [allMessages, setAllMessages] = useState([]);
 
+    const [userData, setUserData] = useState(undefined)
+    const [isSending, setIsSending] = useState(false)
+
     const user = auth.currentUser;
 
     const userId = route?.params?.id
+
+
     useEffect(() => {
+
+        if (user.uid === "21vftV7EKUOu5kCAP11WyygDUFG2") {
+            (async () => {
+                const docref = doc(
+                    db,
+                    "chatUser",
+                    "21vftV7EKUOu5kCAP11WyygDUFG2",
+                    "chatUsers",
+                    route?.params?.id,
+                )
+
+                const ref = await getDoc(docref)
+
+
+                if (ref.exists()) {
+                    await updateDoc(docref, {
+                        isNewAdminMessage: 0,
+                    })
+
+                    setUserData(ref.data())
+
+
+                }
+            })()
+        }
+
+        if (user.uid !== "21vftV7EKUOu5kCAP11WyygDUFG2") {
+            (async () => {
+                const docref = doc(db,
+                    "chatUser",
+                    "21vftV7EKUOu5kCAP11WyygDUFG2",
+                    "chatUsers",
+                    user.uid)
+
+                const ref = await getDoc(docref)
+                if (ref.exists()) {
+                    await updateDoc(docref, {
+                        isNewUserMessage: 0,
+                    })
+                    setUserData(ref.data())
+
+                }
+            })()
+
+        }
+
+
+
         if (userId === undefined) {
 
             const unsub = onSnapshot(
@@ -76,19 +133,20 @@ const Chat = ({ route }) => {
         }
 
 
-
-
-    }, []);
+    }, [userData]);
 
 
 
     const sendMessage = async () => {
-        // console.log("about to send")
+
         if (chatMessage.trim() === "") return
+        if (isSending) return
+        setIsSending(true)
+
+
 
         try {
             if (user.uid === "21vftV7EKUOu5kCAP11WyygDUFG2") {
-
 
                 await addDoc(
                     collection(
@@ -107,11 +165,36 @@ const Chat = ({ route }) => {
                         timestamp: new Date(),
                     }
                 );
-                console.log("admin send")
+
+                const docref = doc(
+                    db,
+                    "chatUser",
+                    "21vftV7EKUOu5kCAP11WyygDUFG2",
+                    "chatUsers",
+                    route?.params?.id,
+                )
+
+                const ref = await getDoc(docref)
+
+
+                if (ref.exists()) {
+                    await updateDoc(docref, {
+                        isNewUserMessage: userData.isNewUserMessage + 1,
+                        user: user.uid,
+                    })
+
+                } else {
+                    await setDoc(docref, {
+                        user: user.uid,
+                        isNewUserMessage: 1
+                    })
+                }
+
             }
 
 
             if (user.uid !== "21vftV7EKUOu5kCAP11WyygDUFG2") {
+
 
                 await addDoc(
                     collection(
@@ -130,23 +213,40 @@ const Chat = ({ route }) => {
                     }
                 );
 
+                const docref = doc(db,
+                    "chatUser",
+                    "21vftV7EKUOu5kCAP11WyygDUFG2",
+                    "chatUsers",
+                    user.uid)
+
+                const ref = await getDoc(docref)
+                if (ref.exists()) {
+                    await updateDoc(docref, {
+                        isNewAdminMessage: userData.isNewAdminMessage + 1,
+                        user: user.uid,
+                    })
+
+                } else {
+                    await setDoc(docref, {
+                        user: user.uid,
+                        isNewAdminMessage: 1
+                    })
+                }
+
             }
 
-
         } catch (error) {
-            console.log(error);
+
         }
         setChatMessage("");
+        setIsSending(false)
     };
 
 
 
-    console.log(user.uid)
-
 
     const Item = ({ item }) => {
         let time = item?.messages?.timestamp?.toDate()
-        console.log(item)
 
         return (
             <View style={[styles.container, item?.messages?.messageUserId === "21vftV7EKUOu5kCAP11WyygDUFG2" ? { backgroundColor: "#3376bc", marginLeft: "auto" } : { backgroundColor: "lightgrey", marginRight: "auto" }]}>
@@ -158,7 +258,7 @@ const Chat = ({ route }) => {
 
 
     return (
-        <KeyboardAvoidingView style={styles.root}>
+        <KeyboardAvoidingView style={styles.root} keyboardVerticalOffset={60}>
 
             <FlatList data={allMessages} renderItem={({ item }) => <Item item={item} />} />
             <View style={styles.inputContainer}>

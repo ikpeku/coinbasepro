@@ -36,11 +36,7 @@ const Admin = ({ navigation }) => {
 
         setIsLoding(false)
 
-      } catch (error) {
-
-
-
-      }
+      } catch (error) { }
 
     }
 
@@ -56,7 +52,6 @@ const Admin = ({ navigation }) => {
     Alert.alert('Delete user', `do you want to delete ${users.Name}`, [
       {
         text: 'No',
-        // onPress: () => console.log('Cancel Pressed'),
         style: 'cancel',
       },
       {

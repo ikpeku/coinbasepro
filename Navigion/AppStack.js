@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 
 import { createDrawerNavigator } from '@react-navigation/drawer'
@@ -15,10 +15,12 @@ import {
 } from '../sreens'
 import { CustomDrawer } from '../components'
 import TapNavigtion from './TapNavigtion'
-import { auth } from '../firebase/firebaseConfig'
+import { auth, db } from '../firebase/firebaseConfig'
 
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import { doc, getDoc } from 'firebase/firestore'
+import { Text, View } from 'react-native'
 const StackAdminScreens = createNativeStackNavigator()
 const StackChat = createNativeStackNavigator()
 
@@ -66,6 +68,41 @@ const StackChatComponent = () => {
 
 const Drawer = createDrawerNavigator()
 const AppStack = () => {
+  const [userData, setData] = useState(null)
+  const user = auth.currentUser
+
+  useEffect(() => {
+    const docref = doc(db,
+      "chatUser",
+      "21vftV7EKUOu5kCAP11WyygDUFG2",
+      "chatUsers",
+      user.uid)
+    const query = async () => {
+      const ref = await getDoc(docref)
+      // console.log("isDoc", ref.exists())
+      if (ref.exists()) {
+        setData(ref.data())
+      }
+
+    }
+    query()
+  }, [userData])
+
+
+
+  const IconBadge = ({ color }) => {
+    return (
+      <View style={{ position: "relative" }}>
+        <Entypo name="chat" size={24} color={color} />
+        {userData?.isNewUserMessage > 0 && <View style={{ position: "absolute", right: 0, top: -6, backgroundColor: "orange", borderRadius: 10, padding: 1 }}>
+          <Text style={{ color: "#fff" }}>{userData?.isNewUserMessage}</Text>
+        </View>}
+      </View>
+    )
+  }
+
+
+
   return (
     <Drawer.Navigator
       drawerContent={(props) => <CustomDrawer {...props} />}
@@ -138,8 +175,9 @@ const AppStack = () => {
           headerTitleAlign: "center",
           title: "Chat",
           drawerIcon: ({ color }) => (
-            <Entypo name="chat" size={24} color={color} />
+            <IconBadge color={color} />
           ),
+
         }}
       />}
 

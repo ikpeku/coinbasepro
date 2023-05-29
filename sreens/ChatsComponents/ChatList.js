@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 // import { Image } from 'react-native'
 import { auth, db } from '../../firebase/firebaseConfig'
 import {
@@ -17,20 +17,44 @@ import {
 
 
 const Item = ({ navigation, item }) => {
+    const [userData, setUserData] = useState(0)
 
-    // console.log(item.id)
+    useMemo(() => {
+
+        (async () => {
+            const docref = doc(
+                db,
+                "chatUser",
+                "21vftV7EKUOu5kCAP11WyygDUFG2",
+                "chatUsers",
+                item?.id
+            )
+
+            const ref = await getDoc(docref)
+            if (ref.exists()) {
+                setUserData(ref.data())
+            }
+        })()
+
+
+    }, [userData])
+
+
     return (
         <TouchableOpacity onPress={() => navigation.navigate("chat", { id: item?.id })} style={styles.container}>
-            {/* <Image source={{ uri: "https://img.freepik.com/free-photo/white-t-shirts-with-copy-space-gray-background_53876-104920.jpg?w=740&t=st=1684890865~exp=1684891465~hmac=160705343d38c315ee4bf474cc5ed1d97ccb42212aac2e3cfd35b93d8297020e" }} style={styles.image} />
-            <View style={styles.badgeContainer}>
-                <Text style={styles.bagdgeText}>4</Text>
-            </View> */}
             <View style={styles.rightContainer}>
-                <View style={styles.row}>
+                <View>
                     <Text style={styles.name}>{item.users.Name}</Text>
-                    {/* <Text style={styles.text}>11:34</Text> */}
+
                 </View>
-                {/* <Text numberOfLines={1} style={styles.text}>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sed nisi aliquid alias fugiat culpa iusto omnis, maxime inventore impedit corporis, modi a quia blanditiis numquam! Quis porro officia totam reiciendis.</Text> */}
+
+                <View style={styles.badge}>
+                    <Text style={{ textAlign: "center", color: "#fff" }}>d{userData?.isNewAdminMessage}</Text>
+                </View>
+
+                {/* {userData?.isNewAdminMessage && <View style={styles.badge}> */}
+
+                {/* </View>} */}
             </View>
 
         </TouchableOpacity>
@@ -44,7 +68,10 @@ const ChatList = ({ navigation }) => {
     const [users, setUsers] = useState([]);
 
     useEffect(() => {
-        const fetchUser = async () => {
+
+
+
+        (async () => {
 
 
             try {
@@ -69,9 +96,9 @@ const ChatList = ({ navigation }) => {
 
             }
 
-        }
+        })()
 
-        fetchUser()
+
     }, [])
 
 
@@ -130,19 +157,22 @@ const styles = StyleSheet.create({
     },
     rightContainer: {
         flex: 1,
-        justifyContent: "center",
-        marginLeft: 10
-    },
-    row: {
+        alignItems: "center",
         flexDirection: "row",
-        justifyContent: "space-between"
+        marginLeft: 10,
     },
     name: {
         fontWeight: "bold",
         fontSize: 18,
         marginBottom: 3,
     },
-    text: {
+    badge: {
+        backgroundColor: "#3376bc",
+        width: 20,
+        aspectRatio: 1,
+        borderRadius: 7,
+        justifyContent: "center",
+        marginLeft: 10,
 
     }
 
