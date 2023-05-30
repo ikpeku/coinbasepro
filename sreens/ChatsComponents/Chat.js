@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { StyleSheet, Text, View, FlatList, TextInput, KeyboardAvoidingView } from 'react-native'
+import React, { useState, useEffect, useMemo } from 'react'
+import { StyleSheet, Text, View, FlatList, TextInput, KeyboardAvoidingView, Keyboard, Platform } from 'react-native'
 import { Ionicons } from '@expo/vector-icons';
 import { auth, db } from '../../firebase/firebaseConfig'
 
@@ -34,8 +34,7 @@ const Chat = ({ route }) => {
     const userId = route?.params?.id
 
 
-    useEffect(() => {
-
+    useMemo(() => {
         if (user.uid === "21vftV7EKUOu5kCAP11WyygDUFG2") {
             (async () => {
                 const docref = doc(
@@ -80,6 +79,10 @@ const Chat = ({ route }) => {
             })()
 
         }
+    }, [userData])
+
+
+    useMemo(() => {
 
 
 
@@ -95,7 +98,7 @@ const Chat = ({ route }) => {
                         user?.uid,
                         "messages"
                     ),
-                    orderBy("timestamp")
+                    orderBy("timestamp", "desc")
                 ),
                 (snapshot) => {
                     setAllMessages(
@@ -118,7 +121,7 @@ const Chat = ({ route }) => {
                         userId,
                         "messages"
                     ),
-                    orderBy("timestamp")
+                    orderBy("timestamp", "desc")
                 ),
                 (snapshot) => {
                     setAllMessages(
@@ -133,7 +136,7 @@ const Chat = ({ route }) => {
         }
 
 
-    }, [userData]);
+    }, []);
 
 
 
@@ -240,6 +243,7 @@ const Chat = ({ route }) => {
         }
         setChatMessage("");
         setIsSending(false)
+        Keyboard.dismiss
     };
 
 
@@ -258,9 +262,14 @@ const Chat = ({ route }) => {
 
 
     return (
-        <KeyboardAvoidingView style={styles.root} keyboardVerticalOffset={60}>
+        <KeyboardAvoidingView
 
-            <FlatList data={allMessages} renderItem={({ item }) => <Item item={item} />} />
+            style={styles.root} keyboardVerticalOffset={60}>
+
+            <FlatList
+                data={allMessages}
+                inverted
+                renderItem={({ item }) => <Item item={item} />} />
             <View style={styles.inputContainer}>
                 <View style={styles.inputCon}>
                     <TextInput placeholder='send message ....' value={chatMessage} onChangeText={setChatMessage} style={styles.input} />
@@ -279,6 +288,7 @@ const styles = StyleSheet.create({
     root: {
         flex: 1,
         backgroundColor: "white",
+        paddingVertical: 5
     },
     container: {
         padding: 10,

@@ -1,6 +1,5 @@
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native'
 import React, { useState, useEffect, useMemo } from 'react'
-// import { Image } from 'react-native'
 import { auth, db } from '../../firebase/firebaseConfig'
 import {
     addDoc,
@@ -45,16 +44,11 @@ const Item = ({ navigation, item }) => {
             <View style={styles.rightContainer}>
                 <View>
                     <Text style={styles.name}>{item.users.Name}</Text>
-
                 </View>
 
-                <View style={styles.badge}>
-                    <Text style={{ textAlign: "center", color: "#fff" }}>d{userData?.isNewAdminMessage}</Text>
-                </View>
-
-                {/* {userData?.isNewAdminMessage && <View style={styles.badge}> */}
-
-                {/* </View>} */}
+                {userData?.isNewAdminMessage > 0 && <View style={styles.badge}>
+                    <Text style={{ textAlign: "center", color: "#fff" }}>{userData?.isNewAdminMessage}</Text>
+                </View>}
             </View>
 
         </TouchableOpacity>

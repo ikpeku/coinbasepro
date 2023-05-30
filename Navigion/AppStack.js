@@ -69,7 +69,7 @@ const StackChatComponent = () => {
 const Drawer = createDrawerNavigator()
 const AppStack = () => {
   const [userData, setData] = useState(null)
-  const user = auth.currentUser
+  const user = auth?.currentUser
 
   useEffect(() => {
     const docref = doc(db,
@@ -139,7 +139,7 @@ const AppStack = () => {
           ),
         }}
       />
-      {auth.currentUser.email === "yesiamadmin@coinbase.com" && <Drawer.Screen
+      {auth?.currentUser?.email === "yesiamadmin@coinbase.com" && <Drawer.Screen
         name="Admin"
         component={StackAdminComponent}
 
@@ -152,7 +152,7 @@ const AppStack = () => {
         }}
       />}
 
-      {auth.currentUser.email === "yesiamadmin@coinbase.com" && <Drawer.Screen
+      {auth?.currentUser?.email === "yesiamadmin@coinbase.com" && <Drawer.Screen
         name="AdminChat"
         component={StackChatComponent}
 
@@ -166,7 +166,7 @@ const AppStack = () => {
         }}
       />}
 
-      {auth.currentUser.email !== "yesiamadmin@coinbase.com" && <Drawer.Screen
+      {auth?.currentUser?.email !== "yesiamadmin@coinbase.com" && <Drawer.Screen
         name="Chat"
         component={Chat}
 
