@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useMemo } from 'react'
 import { doc, onSnapshot } from 'firebase/firestore'
 import { View, StyleSheet, Text } from "react-native"
 import { db } from '../firebase/firebaseConfig'
@@ -24,11 +24,17 @@ const Balance = () => {
     return () => unsub()
   }, [])
 
+  useMemo(() => {
+    if (balance !== 0) {
+      setBalance(balance)
+    }
+  }, [])
+
 
 
   return (
     <View style={styles.BalanceContainer}>
-      <Text style={styles.contain1}>${balance === 0 ? "00:00" : `${balance}`}</Text>
+      <Text style={styles.contain1}>${balance === 0 ? "00:00" : `${balance?.toString()?.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`}</Text>
       <Text style={styles.contain2}>{coin}</Text>
     </View>
   )

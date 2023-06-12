@@ -26,6 +26,7 @@ const {
 
 
 const Item = ({ item, onPress, backgroundColor, textColor, imgUrl }) => (
+
   <TouchableOpacity
     onPress={onPress}
     style={[styles.item, { backgroundColor, borderRadius: 20, }]}
@@ -44,7 +45,7 @@ const Item = ({ item, onPress, backgroundColor, textColor, imgUrl }) => (
         <Text style={[styles.title, { color: textColor, fontSize: 18, fontFamily: "Nunito-Black" }]}>{item.title}</Text>
         <Text
           style={[styles.title, { color: textColor, fontSize: 18, fontFamily: "Nunito-Black" }]}
-        >{`${item.amt} ${item.id} `}</Text>
+        >{`${item?.amt?.toString()?.replace(/\B(?=(\d{3})+(?!\d))/g, ",")} ${item.id} `}</Text>
       </View>
     </View>
   </TouchableOpacity>
@@ -140,17 +141,10 @@ const Crypto = ({ textInput, navigation, discover }) => {
         return
       }
 
-      // if(discover){
-      //   navigation.navigate("Deposit", {id: item.id, address: item.address, title: item.title})
-      //   return
-      // } 
-
-      // if(!discover){
-      //   navigation.navigate("Withdrawal", {id: item.id, address: item.address, title: item.title, amount: item.amt})
-      //   return
-      // } 
 
     }
+
+
 
     return (
       <Item
