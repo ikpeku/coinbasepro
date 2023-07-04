@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react'
-import { StyleSheet, Text, View, FlatList, TextInput, KeyboardAvoidingView, Keyboard, Platform } from 'react-native'
+import { StyleSheet, Text, View, FlatList, TextInput, KeyboardAvoidingView, Keyboard, Platform, Pressable } from 'react-native'
 import { Ionicons } from '@expo/vector-icons';
 import { auth, db } from '../../firebase/firebaseConfig'
 
@@ -17,7 +17,8 @@ import {
 } from "firebase/firestore";
 import moment from 'moment';
 
-
+import * as Clipboard from 'expo-clipboard';
+import { TouchableOpacity } from 'react-native';
 
 const Chat = ({ route }) => {
 
@@ -253,13 +254,20 @@ const Chat = ({ route }) => {
         let time = item?.messages?.timestamp?.toDate()
 
         return (
-            <View style={[styles.container, item?.messages?.messageUserId === "21vftV7EKUOu5kCAP11WyygDUFG2" ? { backgroundColor: "#3376bc", marginLeft: "auto" } : { backgroundColor: "lightgrey", marginRight: "auto" }]}>
+            <Pressable onPress={() => copyToClipboard(item?.messages?.message)} style={[styles.container, item?.messages?.messageUserId === "21vftV7EKUOu5kCAP11WyygDUFG2" ? { backgroundColor: "#3376bc", marginLeft: "auto" } : { backgroundColor: "lightgrey", marginRight: "auto" }]}>
                 <Text style={{ color: !item?.messages?.messageUserId === "21vftV7EKUOu5kCAP11WyygDUFG2" ? "black" : "white", fontSize: 18 }}>{item?.messages?.message}</Text>
                 <Text style={{ color: item?.messages?.messageUserId === "21vftV7EKUOu5kCAP11WyygDUFG2" ? "lightgray" : "black", fontSize: 15, fontStyle: "italic" }}>{moment(time).fromNow()}</Text>
-            </View>
+            </Pressable>
         )
     }
 
+    const copyToClipboard = async (chat) => {
+        return Clipboard.setStringAsync(chat)
+
+        const text = await Clipboard.getStringAsync();
+        console.log(text)
+        return text
+    };
 
     return (
         <KeyboardAvoidingView
@@ -272,7 +280,7 @@ const Chat = ({ route }) => {
                 renderItem={({ item }) => <Item item={item} />} />
             <View style={styles.inputContainer}>
                 <View style={styles.inputCon}>
-                    <TextInput placeholder='send message ....' value={chatMessage} onChangeText={setChatMessage} style={styles.input} />
+                    <TextInput multiline placeholder='send message ....' value={chatMessage} onChangeText={setChatMessage} style={styles.input} />
                 </View>
                 <View style={{ paddingHorizontal: 5 }}>
                     <Ionicons onPress={sendMessage} name="send" size={24} color="black" />
@@ -309,10 +317,12 @@ const styles = StyleSheet.create({
         margin: 10,
         padding: 5,
         flexDirection: "row",
-        alignItems: "center"
+        alignItems: "flex-end",
+        width: "100%"
     }, inputCon: {
         flexGrow: 1,
         borderRightWidth: 1,
-        borderColor: "lightgrey"
+        borderColor: "lightgrey",
+        maxWidth: "85%"
     }
 })

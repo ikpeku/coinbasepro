@@ -12,10 +12,10 @@ const Balance = () => {
 
   useEffect(() => {
 
-    const refDoc = doc(db, "users", auth.currentUser?.uid)
+    const refDoc = doc(db, "users", auth?.currentUser?.uid)
     const unsub = onSnapshot(refDoc, (snapshot) => {
       if (snapshot.exists) {
-        const { amount, name } = snapshot.data()?.selectedCoin
+        const { amount, name } = snapshot?.data()?.selectedCoin
         setBalance(amount)
         setCoin(name)
       }
