@@ -223,10 +223,6 @@ const ProfileScreen = () => {
   }
 
 
-
-
-
-
   return (
     <SafeAreaView style={{ flex: 1, padding: 10, backgroundColor: "#f1f2f7" }}>
       <ScrollView>
@@ -366,11 +362,13 @@ const ProfileScreen = () => {
                   <Text style={{ paddingVertical: 6, paddingHorizontal: 15, borderRadius: 10, backgroundColor: "#e9e9e9", color: "#acdbf9", fontSize: 15 }}>{passporteUrl ? "change file" : "Choose File"}</Text>
                   <Text style={{ marginLeft: 10 }}>{passporteUrl ? "file selected" : "no file selected"}</Text>
                 </TouchableOpacity>
-                {passporteUrl ? <Image source={{ uri: passporteUrl }} style={{ height: 200, margin: 5 }} /> : <Image source={{ uri: passport }} style={{ height: 200, margin: 5 }} />}
+
+                {passporteUrl !== "" || passport !== null && <>
+                  {passporteUrl ? <Image source={{ uri: passporteUrl }} style={{ height: 200, margin: 5 }} /> : <Image source={{ uri: passport }} style={{ height: 200, margin: 5 }} />}
+                </>}
+
 
                 {upload && <Text style={{ color: "red" }}>licence and passport require </Text>}
-
-
 
                 <TouchableOpacity onPress={!licence && !passport ? () => setUploadError(true) : handleImagesSubmit} style={{ backgroundColor: "#1a2036", padding: 15, marginVertical: 20 }}>
                   <Text style={{ fontSize: 20, fontFamily: "Nunito-Medium", color: "#fff", textAlign: "center" }}>Submit documents</Text>

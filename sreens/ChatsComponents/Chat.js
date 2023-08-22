@@ -18,7 +18,7 @@ import {
 import moment from 'moment';
 
 import * as Clipboard from 'expo-clipboard';
-import { TouchableOpacity } from 'react-native';
+// import { TouchableOpacity } from 'react-native';
 
 const Chat = ({ route }) => {
 

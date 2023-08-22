@@ -48,7 +48,7 @@ const TxnHistory = () => {
                   <View>
                     <Text style={{ padding: 5, color: "#3376bc", fontWeight: "bold", fontSize: 16 }}>{item.type}</Text>
                     <View style={{ flexDirection: "row" }}>
-                      <Text style={item.type === "deposit" ? { padding: 5, color: "green" } : { padding: 5, color: "red" }}>{item?.type === "deposit" ? "+" : "-"}{item?.amount.toLocaleString('en-US', { currency: 'USD' })}</Text>
+                      <Text style={item.type === "deposit" ? { padding: 5, color: "green" } : { padding: 5, color: "red" }}>{item?.type === "deposit" ? "+" : "-"}{item?.amount?.toString()?.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Text>
                       <Text style={{ padding: 5, color: "#3376bc" }}>{item.name}</Text>
                     </View>
 
