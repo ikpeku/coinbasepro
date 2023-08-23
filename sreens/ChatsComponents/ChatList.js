@@ -18,7 +18,7 @@ import {
 const Item = ({ navigation, item }) => {
     const [userData, setUserData] = useState(0)
 
-    useMemo(() => {
+    useEffect(() => {
 
         (async () => {
             const docref = doc(

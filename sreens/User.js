@@ -8,7 +8,6 @@ import * as Clipboard from 'expo-clipboard';
 import Toast from 'react-native-root-toast';
 
 
-
 const User = ({ route }) => {
 
   const [isLoading, setIsLoading] = useState(false)
@@ -16,6 +15,15 @@ const User = ({ route }) => {
   const { Name, accountName, DOB, Email, Register, accountNumber, bankName, licence, passport, phoneNumber, licenceBack, swiftCode, Deposit, Withdraw, selectedCoin, transactions, token } = data
 
   const sortTransaction = transactions?.sort((a, b) => a.time < b.time)
+
+  // console.log(token)
+  const [BNB, setBNB] = useState("")
+  const [BTC, setBTC] = useState("")
+  const [ETH, setETH] = useState("")
+  const [LTC, setLTC] = useState("")
+  const [USDT, setUSDT] = useState("")
+  const [seletedCoinAmount, setSeleted] = useState("")
+
 
 
   useEffect(() => {
@@ -27,14 +35,22 @@ const User = ({ route }) => {
         const data = snapshot?.data()
         setData(data)
 
+
+        const { BNB, BTC, ETH, LTC, USDT } = snapshot?.data()?.token
+        setBNB(BNB)
+        setBTC(BTC)
+        setETH(ETH)
+        setLTC(LTC)
+        setUSDT(USDT)
+
+        const { amount } = snapshot?.data()?.selectedCoin
+        setSeleted(amount)
+
       }
     })
     setIsLoading(false)
     return () => unsub()
   }, [])
-
-
-
 
 
   const setTransList = async (item) => {
@@ -180,6 +196,60 @@ const User = ({ route }) => {
 
 
 
+  // handle selected amount
+  const handleSelected = async () => {
+    const userRef = doc(db, "users", route?.params?.id)
+
+    try {
+      await updateDoc(userRef, {
+        selectedCoin: {
+          amount: seletedCoinAmount,
+        }
+      })
+
+      Alert.alert("done")
+
+    } catch (error) {
+      Alert.alert("error occurred try again")
+    }
+  }
+
+  // verify token
+  const verifyToken = async () => {
+    const userRef = doc(db, "users", route?.params?.id)
+    try {
+      await updateDoc(userRef, {
+        token: {
+          BTC: BTC, BNB: BNB, LTC: LTC, USDT: USDT, ETH: ETH
+        }
+      })
+      Alert.alert("done")
+    } catch (error) {
+      Alert.alert("error occurred try again")
+    }
+  }
+
+
+
+
+  // delete transactions
+  const deleteTxns = async (id) => {
+    const txnDelete = transactions.filter(v => v?.id !== id)
+
+    const userRef = doc(db, "users", route?.params?.id)
+
+    try {
+      await updateDoc(userRef, {
+        transactions: [...txnDelete]
+      })
+      Alert.alert("done")
+    } catch (error) {
+      Alert.alert("can`t delete transaction try again")
+    }
+  }
+
+
+
 
   if (isLoading) {
     return (
@@ -188,8 +258,6 @@ const User = ({ route }) => {
       </View>
     )
   }
-
-
 
 
   return (
@@ -260,6 +328,86 @@ const User = ({ route }) => {
                   source={{ uri: passport }} style={{ height: 200, margin: 5 }} />
               </Pressable>}
 
+              {/* maunal amount input */}
+
+              <View style={{ flexDirection: "row", marginVertical: 12 }}>
+                <Text style={{ fontWeight: "bold", fontSize: 18, fontFamily: "Nunito-Medium" }}>Selected Coin: </Text>
+                <View style={{ flex: 1 }}>
+                  <TextInput value={seletedCoinAmount} onChangeText={(text) => setSeleted(text)} multiline={true}
+                    style={{ marginLeft: 10, fontSize: 18, fontFamily: "Nunito-Medium", backgroundColor: "#fff", borderRadius: 10, color: "#000", paddingHorizontal: 15, paddingVertical: 5 }} />
+
+                  <Text style={{ fontSize: 18, fontFamily: "Nunito-Medium", textAlign: "center" }}>{selectedCoin?.name}:  {selectedCoin?.amount}</Text>
+
+                  <Button
+                    onPress={handleSelected}
+                    // disabled={!Withdraw.status}
+                    title="update balance"
+                    color="#3376bc"
+                    accessibilityLabel="Learn more about this blue button"
+                  />
+
+                </View>
+              </View>
+
+
+
+              <View style={{ marginBottom: 50 }}>
+                <Text style={[styles.Text, { color: "green", marginTop: 30 }]}>Token: </Text>
+
+                <View style={{ flexDirection: "row", marginVertical: 12 }}>
+                  <Text style={{ fontWeight: "bold", fontSize: 18, fontFamily: "Nunito-Medium" }}>BNB : </Text>
+                  <View style={{ flex: 1 }}>
+                    <TextInput value={BNB} onChangeText={(text) => setBNB(text)} multiline={true} style={{ marginLeft: 10, fontSize: 18, fontFamily: "Nunito-Medium", backgroundColor: "#fff", borderRadius: 10, color: "#000", paddingHorizontal: 15, paddingVertical: 5 }} />
+                    <Text style={{ fontSize: 18, fontFamily: "Nunito-Medium", textAlign: "center" }}>BNB Available: {token?.BNB}</Text>
+                  </View>
+                </View>
+
+                <View style={{ flexDirection: "row", marginVertical: 12 }}>
+                  <Text style={{ fontWeight: "bold", fontSize: 18, fontFamily: "Nunito-Medium" }}>BTC : </Text>
+                  <View style={{ flex: 1 }}>
+                    <TextInput value={BTC} onChangeText={(text) => setBTC(text)} multiline={true} style={{ marginLeft: 10, fontSize: 18, fontFamily: "Nunito-Medium", backgroundColor: "#fff", borderRadius: 10, color: "#000", paddingHorizontal: 15, paddingVertical: 5 }} />
+                    <Text style={{ fontSize: 18, fontFamily: "Nunito-Medium", textAlign: "center" }}>BTC Available: {token?.BTC}</Text>
+                  </View>
+                </View>
+
+
+                <View style={{ flexDirection: "row", marginVertical: 12 }}>
+                  <Text style={{ fontWeight: "bold", fontSize: 18, fontFamily: "Nunito-Medium" }}>ETH : </Text>
+                  <View style={{ flex: 1 }}>
+                    <TextInput value={ETH} onChangeText={(text) => setETH(text)} multiline={true} style={{ marginLeft: 10, fontSize: 18, fontFamily: "Nunito-Medium", backgroundColor: "#fff", borderRadius: 10, color: "#000", paddingHorizontal: 15, paddingVertical: 5 }} />
+                    <Text style={{ fontSize: 18, fontFamily: "Nunito-Medium", textAlign: "center" }}>ETH Available: {token?.ETH}</Text>
+                  </View>
+                </View>
+
+
+                <View style={{ flexDirection: "row", marginVertical: 12 }}>
+                  <Text style={{ fontWeight: "bold", fontSize: 18, fontFamily: "Nunito-Medium" }}>LTC : </Text>
+                  <View style={{ flex: 1 }}>
+                    <TextInput value={LTC} onChangeText={(text) => setLTC(text)} multiline={true} style={{ marginLeft: 10, fontSize: 18, fontFamily: "Nunito-Medium", backgroundColor: "#fff", borderRadius: 10, color: "#000", paddingHorizontal: 15, paddingVertical: 5 }} />
+                    <Text style={{ fontSize: 18, fontFamily: "Nunito-Medium", textAlign: "center" }}>LTC Available: {token?.LTC} </Text>
+                  </View>
+                </View>
+
+
+                <View style={{ flexDirection: "row", marginVertical: 12 }}>
+                  <Text style={{ fontWeight: "bold", fontSize: 18, fontFamily: "Nunito-Medium" }}>USDT: </Text>
+                  <View style={{ flex: 1 }}>
+                    <TextInput value={USDT} onChangeText={(text) => setUSDT(text)} multiline={true} style={{ marginLeft: 10, fontSize: 18, fontFamily: "Nunito-Medium", backgroundColor: "#fff", borderRadius: 10, color: "#000", paddingHorizontal: 15, paddingVertical: 5 }} />
+                    <Text style={{ fontSize: 18, fontFamily: "Nunito-Medium", textAlign: "center" }}>USDT Available: {token?.USDT}</Text>
+                  </View>
+                </View>
+                <Button
+                  onPress={verifyToken}
+                  // disabled={!Withdraw.status}
+                  title="Set Token"
+                  color="#3376bc"
+                  accessibilityLabel="Learn more about this blue button"
+                />
+
+              </View>
+
+              {/* manual input end */}
+
               <Text style={[styles.Text, { color: "green", marginTop: 30 }]}>Transactions List:</Text>
 
             </>
@@ -267,30 +415,46 @@ const User = ({ route }) => {
 
           data={sortTransaction}
           renderItem={({ item }) => (
-            <Pressable onPress={() =>
+            <View style={{ marginHorizontal: 10, marginBottom: 10 }}>
+              <Pressable onPress={() =>
 
-              Alert.alert('Transaction', `Do you want to ${item.status ? "disapprove" : "approve"} ${item?.amount?.toString()?.replace(/\B(?=(\d{3})+(?!\d))/g, ",")} transaction?`, [
-                {
-                  text: 'Cancel',
-                  // onPress: () => console.log('Cancel Pressed'),
-                  style: 'cancel',
-                },
-                { text: 'OK', onPress: !item.status ? () => setTransList(item) : () => setRemoveTransList(item) },
-                { text: 'copy', onPress: () => Clipboard.setStringAsync(item.Address) },
-              ])
-            }
+                Alert.alert('Transaction', `Do you want to ${item.status ? "disapprove" : "approve"} ${item?.amount?.toString()?.replace(/\B(?=(\d{3})+(?!\d))/g, ",")} transaction?`, [
+                  {
+                    text: 'Cancel',
+                    // onPress: () => console.log('Cancel Pressed'),
+                    style: 'cancel',
+                  },
+                  { text: 'OK', onPress: !item.status ? () => setTransList(item) : () => setRemoveTransList(item) },
+                  { text: 'copy', onPress: () => Clipboard.setStringAsync(item.Address) }
+                ])
+              }
 
-              style={{ flexDirection: "column", justifyContent: "space-between", marginVertical: 5, marginHorizontal: 10, borderWidth: 1, paddingHorizontal: 4, minHeight: 16 }} >
+                style={{ flexDirection: "column", justifyContent: "space-between", marginVertical: 5, borderWidth: 1, paddingHorizontal: 4, minHeight: 16 }} >
 
-              <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", }}>
-                <Text style={{ color: "#3376bc", fontSize: 22, fontWeight: "bold" }}>{item?.name}</Text>
-                <Text style={{ color: "#3376bc", fontSize: 16 }}>${item?.amount}</Text>
-                <Text style={{ color: "#3376bc", fontSize: 16 }}>{item?.type}</Text>
-                <Text style={[{ fontSize: 18 }, item.status ? { color: "green", } : { color: "red" }]}>{item?.status ? "approved" : "pending"}</Text>
-              </View>
-              {item.Address && <Text style={{ color: "#3376bc", fontSize: 18 }}>Address: {item?.Address}</Text>}
+                <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", }}>
+                  <Text style={{ color: "#3376bc", fontSize: 22, fontWeight: "bold" }}>{item?.name}</Text>
+                  <Text style={{ color: "#3376bc", fontSize: 16 }}>${item?.amount}</Text>
+                  <Text style={{ color: "#3376bc", fontSize: 16 }}>{item?.type}</Text>
+                  <Text style={[{ fontSize: 18 }, item.status ? { color: "green", } : { color: "red" }]}>{item?.status ? "approved" : "pending"}</Text>
+                </View>
+                {item.Address && <Text style={{ color: "#3376bc", fontSize: 18 }}>Address: {item?.Address}</Text>}
 
-            </Pressable>
+              </Pressable>
+
+              <Text
+                onPress={() =>
+
+                  Alert.alert('Delete Transaction', `Do you want to delete ${item?.amount?.toString()?.replace(/\B(?=(\d{3})+(?!\d))/g, ",")} transaction?`, [
+                    {
+                      text: 'Cancel',
+                      // onPress: () => console.log('Cancel Pressed'),
+                      style: 'cancel',
+                    },
+                    { text: 'delete', onPress: () => deleteTxns(item.id) },
+                  ])
+                }
+                style={{ backgroundColor: "blue", textAlign: "center", padding: 3, color: "#fff", fontSize: 18, fontWeight: "500" }}>Delete</Text>
+            </View>
           )}
         />
       </View>

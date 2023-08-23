@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useMemo } from 'react'
-import { StyleSheet, Text, View, FlatList, TextInput, KeyboardAvoidingView, Keyboard, Platform, Pressable } from 'react-native'
-import { Ionicons } from '@expo/vector-icons';
+import { StyleSheet, Text, View, FlatList, TextInput, KeyboardAvoidingView, Keyboard, Platform, Pressable, Image } from 'react-native'
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { auth, db } from '../../firebase/firebaseConfig'
-
+import * as ImagePicker from 'expo-image-picker';
+import { uuidv4 } from '@firebase/util';
+import { getStorage, ref, uploadBytesResumable, getDownloadURL, uploadBytes } from "firebase/storage";
 
 import {
     addDoc,
@@ -18,7 +20,7 @@ import {
 import moment from 'moment';
 
 import * as Clipboard from 'expo-clipboard';
-// import { TouchableOpacity } from 'react-native';
+import { uriToBlob } from '../../components/uriToBlob';
 
 const Chat = ({ route }) => {
 
@@ -35,7 +37,7 @@ const Chat = ({ route }) => {
     const userId = route?.params?.id
 
 
-    useMemo(() => {
+    useEffect(() => {
         if (user.uid === "21vftV7EKUOu5kCAP11WyygDUFG2") {
             (async () => {
                 const docref = doc(
@@ -53,10 +55,7 @@ const Chat = ({ route }) => {
                     await updateDoc(docref, {
                         isNewAdminMessage: 0,
                     })
-
                     setUserData(ref.data())
-
-
                 }
             })()
         }
@@ -82,10 +81,8 @@ const Chat = ({ route }) => {
         }
     }, [userData])
 
-
-    useMemo(() => {
-
-
+    // userData
+    useEffect(() => {
 
         if (userId === undefined) {
 
@@ -135,8 +132,6 @@ const Chat = ({ route }) => {
             );
             return unsub;
         }
-
-
     }, []);
 
 
@@ -167,6 +162,7 @@ const Chat = ({ route }) => {
                         messageUserId: user.uid,
                         message: chatMessage?.trim(),
                         timestamp: new Date(),
+                        photo: null
                     }
                 );
 
@@ -214,6 +210,7 @@ const Chat = ({ route }) => {
                         messageUserId: user.uid,
                         message: chatMessage?.trim(),
                         timestamp: new Date(),
+                        photo: null
                     }
                 );
 
@@ -228,12 +225,14 @@ const Chat = ({ route }) => {
                     await updateDoc(docref, {
                         isNewAdminMessage: userData.isNewAdminMessage + 1,
                         user: user.uid,
+
                     })
 
                 } else {
                     await setDoc(docref, {
                         user: user.uid,
-                        isNewAdminMessage: 1
+                        isNewAdminMessage: 1,
+
                     })
                 }
 
@@ -241,6 +240,10 @@ const Chat = ({ route }) => {
 
         } catch (error) {
 
+        } finally {
+            setChatMessage("");
+            setIsSending(false)
+            Keyboard.dismiss
         }
         setChatMessage("");
         setIsSending(false)
@@ -250,24 +253,167 @@ const Chat = ({ route }) => {
 
 
 
+
+
+    const pickPhoto = async () => {
+        // No permissions request is necessary for launching the image library
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            allowsEditing: true,
+            // aspect: [4, 3],
+            quality: 1,
+        });
+
+        // console.log(result);
+        if (!result.canceled) {
+            const isPhoto = result.assets[0].uri
+            const blobFile = await uriToBlob(isPhoto)
+
+            const photo = `${auth.currentUser?.displayName}-${uuidv4()}`
+
+            const reference = ref(getStorage(), photo)
+            await uploadBytesResumable(reference, blobFile)
+            const downloadURL = await getDownloadURL(reference);
+            // console.log("link: ", downloadURL)
+
+            try {
+                if (user.uid === "21vftV7EKUOu5kCAP11WyygDUFG2") {
+
+                    await addDoc(
+                        collection(
+                            db,
+                            "chat",
+                            "21vftV7EKUOu5kCAP11WyygDUFG2",
+                            "chatUsers",
+                            route?.params?.id,
+
+                            "messages"
+                        ),
+                        {
+                            username: "admin",
+                            messageUserId: user.uid,
+                            message: null,
+                            timestamp: new Date(),
+                            photo: downloadURL
+                        }
+                    );
+
+                    const docref = doc(
+                        db,
+                        "chatUser",
+                        "21vftV7EKUOu5kCAP11WyygDUFG2",
+                        "chatUsers",
+                        route?.params?.id,
+                    )
+
+                    const ref = await getDoc(docref)
+
+
+                    if (ref.exists()) {
+                        await updateDoc(docref, {
+                            isNewUserMessage: userData.isNewUserMessage + 1,
+                            user: user.uid,
+                        })
+
+                    } else {
+                        await setDoc(docref, {
+                            user: user.uid,
+                            isNewUserMessage: 1
+                        })
+                    }
+
+                }
+
+
+                if (user.uid !== "21vftV7EKUOu5kCAP11WyygDUFG2") {
+
+
+                    await addDoc(
+                        collection(
+                            db,
+                            "chat",
+                            "21vftV7EKUOu5kCAP11WyygDUFG2",
+                            "chatUsers",
+                            user.uid,
+                            "messages"
+                        ),
+                        {
+                            username: user.displayName,
+                            messageUserId: user.uid,
+                            message: null,
+                            timestamp: new Date(),
+                            photo: downloadURL
+                        }
+                    );
+
+                    const docref = doc(db,
+                        "chatUser",
+                        "21vftV7EKUOu5kCAP11WyygDUFG2",
+                        "chatUsers",
+                        user.uid)
+
+                    const ref = await getDoc(docref)
+                    if (ref.exists()) {
+                        await updateDoc(docref, {
+                            isNewAdminMessage: userData.isNewAdminMessage + 1,
+                            user: user.uid,
+
+                        })
+
+                    } else {
+                        await setDoc(docref, {
+                            user: user.uid,
+                            isNewAdminMessage: 1,
+
+                        })
+                    }
+
+                }
+
+            } catch (error) {
+
+            }
+
+
+        }
+    };
+
+
+
+
     const Item = ({ item }) => {
         let time = item?.messages?.timestamp?.toDate()
 
+        // isChat
         return (
-            <Pressable onPress={() => copyToClipboard(item?.messages?.message)} style={[styles.container, item?.messages?.messageUserId === "21vftV7EKUOu5kCAP11WyygDUFG2" ? { backgroundColor: "#3376bc", marginLeft: "auto" } : { backgroundColor: "lightgrey", marginRight: "auto" }]}>
-                <Text style={{ color: !item?.messages?.messageUserId === "21vftV7EKUOu5kCAP11WyygDUFG2" ? "black" : "white", fontSize: 18 }}>{item?.messages?.message}</Text>
-                <Text style={{ color: item?.messages?.messageUserId === "21vftV7EKUOu5kCAP11WyygDUFG2" ? "lightgray" : "black", fontSize: 15, fontStyle: "italic" }}>{moment(time).fromNow()}</Text>
-            </Pressable>
+            <>
+                {item?.messages?.message && <Pressable
+                    onPress={() => Clipboard.setStringAsync(item?.messages?.message)}
+                    style={[styles.container, item?.messages?.messageUserId === "21vftV7EKUOu5kCAP11WyygDUFG2" ? { backgroundColor: "#3376bc", marginLeft: "auto" } : { backgroundColor: "lightgrey", marginRight: "auto" }]}>
+                    <Text style={{ color: !item?.messages?.messageUserId === "21vftV7EKUOu5kCAP11WyygDUFG2" ? "black" : "white", fontSize: 18 }}>{item?.messages?.message}</Text>
+                    {item?.messages?.message && <Text style={{ color: !item?.messages?.messageUserId === "21vftV7EKUOu5kCAP11WyygDUFG2" ? "black" : "white", fontSize: 18 }}>{item?.messages?.message}</Text>}
+                    <Text style={{ color: item?.messages?.messageUserId === "21vftV7EKUOu5kCAP11WyygDUFG2" ? "lightgray" : "black", fontSize: 15, fontStyle: "italic" }}>{moment(time).fromNow()}</Text>
+                </Pressable>}
+
+                {item?.messages?.photo && <Pressable
+                    onPress={() => Clipboard.setStringAsync(item?.messages?.photo)}
+                    style={[styles.container, item?.messages?.messageUserId === "21vftV7EKUOu5kCAP11WyygDUFG2" ? { backgroundColor: "#3376bc", marginLeft: "auto" } : { backgroundColor: "lightgrey", marginRight: "auto" }]}>
+                    {item?.messages?.photo &&
+                        <Image source={{ uri: item?.messages?.photo }} style={{ height: 200, }} resizeMode='contain' />
+                    }
+                    <Text style={{ color: item?.messages?.messageUserId === "21vftV7EKUOu5kCAP11WyygDUFG2" ? "lightgray" : "black", fontSize: 15, fontStyle: "italic" }}>{moment(time).fromNow()}</Text>
+                </Pressable>}
+            </>
         )
     }
 
-    const copyToClipboard = async (chat) => {
-        return Clipboard.setStringAsync(chat)
+    // const copyToClipboard = async (chat) => {
+    //     Clipboard.setStringAsync(chat)
+    // };
 
-        const text = await Clipboard.getStringAsync();
-        console.log(text)
-        return text
-    };
+
+
+
 
     return (
         <KeyboardAvoidingView
@@ -279,11 +425,14 @@ const Chat = ({ route }) => {
                 inverted
                 renderItem={({ item }) => <Item item={item} />} />
             <View style={styles.inputContainer}>
-                <View style={styles.inputCon}>
+                {/* {!isImage &&  */}
+                <View style={[styles.inputCon, { flexDirection: "row", alignItems: "flex-end", paddingHorizontal: 5 }]}>
                     <TextInput multiline placeholder='send message ....' value={chatMessage} onChangeText={setChatMessage} style={styles.input} />
-                </View>
-                <View style={{ paddingHorizontal: 5 }}>
                     <Ionicons onPress={sendMessage} name="send" size={24} color="black" />
+                </View>
+
+                <View style={{ paddingHorizontal: 5 }}>
+                    <MaterialIcons name="add-a-photo" size={24} color="black" onPress={pickPhoto} />
                 </View>
             </View>
         </KeyboardAvoidingView>
@@ -307,9 +456,10 @@ const styles = StyleSheet.create({
         maxWidth: "75%"
     },
     input: {
-        width: "100%",
+        width: "80%",
         // backgroundColor: "red", 
-        padding: 5
+        padding: 5,
+        flexGrow: 1
     },
     inputContainer: {
         backgroundColor: "#f2f2f2",
@@ -318,7 +468,8 @@ const styles = StyleSheet.create({
         padding: 5,
         flexDirection: "row",
         alignItems: "flex-end",
-        width: "100%"
+        width: "100%",
+
     }, inputCon: {
         flexGrow: 1,
         borderRightWidth: 1,

@@ -14,6 +14,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { SignnedOut } from '../firebase/firebaseConfig'
 
 import { AuthContext } from '../context/AuthContext'
+import { uriToBlob } from '../components/uriToBlob'
 
 
 const ProfileScreen = () => {
@@ -177,8 +178,10 @@ const ProfileScreen = () => {
 
       if (getPassport) {
         // passport
-        const response = await fetch(getPassport);
-        const blobFile = await response.blob();
+        // const response = await fetch(getPassport);
+        // const blobFile = await response.blob();
+        const blobFile = await uriToBlob(getPassport)
+
         const passportfile = `${auth.currentUser?.displayName}-${passport}`
         const reference = ref(getStorage(), passportfile)
         await uploadBytesResumable(reference, blobFile)
@@ -188,8 +191,10 @@ const ProfileScreen = () => {
 
       if (getLicence) {
         // licence
-        const responseL = await fetch(getLicence);
-        const blobFileL = await responseL.blob();
+        // const responseL = await fetch(getLicence);
+        // const blobFileL = await responseL.blob();
+        const blobFileL = await uriToBlob(getLicence);
+
         const passportfileL = `${auth.currentUser?.displayName}-${licence}`
         const referenceL = ref(getStorage(), passportfileL)
         await uploadBytesResumable(referenceL, blobFileL)
@@ -200,8 +205,10 @@ const ProfileScreen = () => {
 
       if (getLicenceBack) {
         // licenceBack
-        const responseLB = await fetch(getLicenceBack);
-        const blobFileLB = await responseLB.blob();
+        // const responseLB = await fetch(getLicenceBack);
+        // const blobFileLB = await responseLB.blob();
+        const blobFileLB = await uriToBlob(getLicenceBack);
+
         const passportfileLB = `${auth.currentUser?.displayName}-${licenceBack}`
         const referenceLB = ref(getStorage(), passportfileLB)
         await uploadBytesResumable(referenceLB, blobFileLB)
@@ -210,7 +217,11 @@ const ProfileScreen = () => {
       }
 
 
-
+      Toast.show("successful", {
+        textColor: "green",
+        duration: Toast.durations.SHORT,
+        position: "top"
+      })
 
     } catch (e) {
       Toast.show("fail to upload doc", {
@@ -350,7 +361,9 @@ const ProfileScreen = () => {
                   <Text style={{ paddingVertical: 6, paddingHorizontal: 15, borderRadius: 10, backgroundColor: "#e9e9e9", color: "#acdbf9", fontSize: 15 }}>{licenceBackUrl ? "change file" : "Choose File"}</Text>
                   <Text style={{ marginLeft: 10 }}>{licenceBackUrl ? "file selected" : "no file selected"}</Text>
                 </TouchableOpacity>
+
                 {licenceBackUrl ? <Image source={{ uri: licenceBackUrl }} style={{ height: 200, margin: 5 }} /> : <Image source={{ uri: licenceBack }} style={{ height: 200, margin: 5 }} />}
+
 
                 {/* pick passport */}
 
@@ -363,9 +376,9 @@ const ProfileScreen = () => {
                   <Text style={{ marginLeft: 10 }}>{passporteUrl ? "file selected" : "no file selected"}</Text>
                 </TouchableOpacity>
 
-                {passporteUrl !== "" || passport !== null && <>
-                  {passporteUrl ? <Image source={{ uri: passporteUrl }} style={{ height: 200, margin: 5 }} /> : <Image source={{ uri: passport }} style={{ height: 200, margin: 5 }} />}
-                </>}
+
+                {passporteUrl ? <Image source={{ uri: passporteUrl }} style={{ height: 200, margin: 5 }} /> : <Image source={{ uri: passport }} style={{ height: 200, margin: 5 }} />}
+
 
 
                 {upload && <Text style={{ color: "red" }}>licence and passport require </Text>}
