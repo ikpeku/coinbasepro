@@ -139,6 +139,7 @@ const Chat = ({ route }) => {
     const sendMessage = async () => {
 
         if (chatMessage.trim() === "") return
+        if (!chatMessage) return
         if (isSending) return
         setIsSending(true)
 
@@ -390,7 +391,6 @@ const Chat = ({ route }) => {
                 {item?.messages?.message && <Pressable
                     onPress={() => Clipboard.setStringAsync(item?.messages?.message)}
                     style={[styles.container, item?.messages?.messageUserId === "21vftV7EKUOu5kCAP11WyygDUFG2" ? { backgroundColor: "#3376bc", marginLeft: "auto" } : { backgroundColor: "lightgrey", marginRight: "auto" }]}>
-                    <Text style={{ color: !item?.messages?.messageUserId === "21vftV7EKUOu5kCAP11WyygDUFG2" ? "black" : "white", fontSize: 18 }}>{item?.messages?.message}</Text>
                     {item?.messages?.message && <Text style={{ color: !item?.messages?.messageUserId === "21vftV7EKUOu5kCAP11WyygDUFG2" ? "black" : "white", fontSize: 18 }}>{item?.messages?.message}</Text>}
                     <Text style={{ color: item?.messages?.messageUserId === "21vftV7EKUOu5kCAP11WyygDUFG2" ? "lightgray" : "black", fontSize: 15, fontStyle: "italic" }}>{moment(time).fromNow()}</Text>
                 </Pressable>}
@@ -399,7 +399,7 @@ const Chat = ({ route }) => {
                     onPress={() => Clipboard.setStringAsync(item?.messages?.photo)}
                     style={[styles.container, item?.messages?.messageUserId === "21vftV7EKUOu5kCAP11WyygDUFG2" ? { backgroundColor: "#3376bc", marginLeft: "auto" } : { backgroundColor: "lightgrey", marginRight: "auto" }]}>
                     {item?.messages?.photo &&
-                        <Image source={{ uri: item?.messages?.photo }} style={{ height: 200, }} resizeMode='contain' />
+                        <Image source={{ uri: item?.messages?.photo }} style={{ height: 200, minWidth: "75%" }} resizeMode='cover' />
                     }
                     <Text style={{ color: item?.messages?.messageUserId === "21vftV7EKUOu5kCAP11WyygDUFG2" ? "lightgray" : "black", fontSize: 15, fontStyle: "italic" }}>{moment(time).fromNow()}</Text>
                 </Pressable>}

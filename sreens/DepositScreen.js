@@ -27,7 +27,7 @@ const DepositScreen = ({ route }) => {
 
   const fetchCopiedText = async () => {
     await Clipboard.getStringAsync();
-    setCopiedText("Adress successfully copied.");
+    setCopiedText("Address successfully copied.");
     setTimeout(() => {
       setCopiedText("");
     }, 3000);
