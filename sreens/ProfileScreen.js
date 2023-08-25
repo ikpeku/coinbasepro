@@ -187,6 +187,8 @@ const ProfileScreen = () => {
         await uploadBytesResumable(reference, blobFile)
         const downloadURL = await getDownloadURL(reference);
         await updateDoc(userRef, { passport: downloadURL })
+
+        setPassport(null);
       }
 
       if (getLicence) {
@@ -200,6 +202,7 @@ const ProfileScreen = () => {
         await uploadBytesResumable(referenceL, blobFileL)
         const downloadURLL = await getDownloadURL(referenceL);
         await updateDoc(userRef, { licence: downloadURLL })
+        setLicence(null);
       }
 
 
@@ -214,13 +217,13 @@ const ProfileScreen = () => {
         await uploadBytesResumable(referenceLB, blobFileLB)
         const downloadURLLB = await getDownloadURL(referenceLB);
         await updateDoc(userRef, { licenceBack: downloadURLLB })
+        setLicenceBack(null);
       }
-
 
       Toast.show("successful", {
         textColor: "green",
         duration: Toast.durations.SHORT,
-        position: "top"
+        // position: ""
       })
 
     } catch (e) {
@@ -229,8 +232,6 @@ const ProfileScreen = () => {
         duration: Toast.durations.SHORT
       })
     }
-
-
   }
 
 

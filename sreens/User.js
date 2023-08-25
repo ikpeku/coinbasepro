@@ -164,7 +164,8 @@ const User = ({ route }) => {
 
 
     // setUploadError(false)
-    const userRef = doc(db, "users", auth.currentUser?.uid)
+    // const userRef = doc(db, "users", auth.currentUser?.uid)
+    const userRef = doc(db, "users", route?.params?.id)
 
     try {
 
