@@ -57,7 +57,7 @@ const Item = ({ navigation, item }) => {
 
 const ChatList = ({ navigation }) => {
 
-
+    console.log("list")
 
     const [users, setUsers] = useState([]);
 

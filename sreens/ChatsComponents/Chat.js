@@ -24,6 +24,9 @@ import { uriToBlob } from '../../components/uriToBlob';
 
 const Chat = ({ route }) => {
 
+    const [openModal, setOpenModal] = useState(false)
+    const [photoUrl, setPhotoUrl] = useState("")
+
 
     const [chatMessage, setChatMessage] = useState("");
 
@@ -79,8 +82,8 @@ const Chat = ({ route }) => {
             })()
 
         }
-    }, [userData])
-
+    }, [])
+    // userData
     // userData
     useEffect(() => {
 
@@ -107,7 +110,8 @@ const Chat = ({ route }) => {
                     );
                 }
             );
-            return unsub;
+            // unsub()
+            // return unsub();
         } else {
             const unsub = onSnapshot(
                 query(
@@ -130,7 +134,8 @@ const Chat = ({ route }) => {
                     );
                 }
             );
-            return unsub;
+            // unsub()
+            // return unsub();
         }
     }, []);
 
@@ -380,8 +385,6 @@ const Chat = ({ route }) => {
     };
 
 
-
-
     const Item = ({ item }) => {
         let time = item?.messages?.timestamp?.toDate()
 
@@ -396,10 +399,15 @@ const Chat = ({ route }) => {
                 </Pressable>}
 
                 {item?.messages?.photo && <Pressable
-                    onPress={() => Clipboard.setStringAsync(item?.messages?.photo)}
+                    onPress={() => {
+                        setPhotoUrl(item?.messages?.photo)
+                        setOpenModal(true)
+                    }
+                    }
                     style={[styles.container, item?.messages?.messageUserId === "21vftV7EKUOu5kCAP11WyygDUFG2" ? { backgroundColor: "#3376bc", marginLeft: "auto" } : { backgroundColor: "lightgrey", marginRight: "auto" }]}>
                     {item?.messages?.photo &&
-                        <Image source={{ uri: item?.messages?.photo }} style={{ height: 200, minWidth: "75%" }} resizeMode='cover' />
+                        <Image source={{ uri: item?.messages?.photo }}
+                            style={{ height: 200, minWidth: "75%" }} resizeMode='cover' />
                     }
                     <Text style={{ color: item?.messages?.messageUserId === "21vftV7EKUOu5kCAP11WyygDUFG2" ? "lightgray" : "black", fontSize: 15, fontStyle: "italic" }}>{moment(time).fromNow()}</Text>
                 </Pressable>}
@@ -412,29 +420,41 @@ const Chat = ({ route }) => {
     // };
 
 
-
-
+    console.log("chat")
 
     return (
         <KeyboardAvoidingView
 
             style={styles.root} keyboardVerticalOffset={60}>
+            {!openModal && <>
 
-            <FlatList
-                data={allMessages}
-                inverted
-                renderItem={({ item }) => <Item item={item} />} />
-            <View style={styles.inputContainer}>
-                {/* {!isImage &&  */}
-                <View style={[styles.inputCon, { flexDirection: "row", alignItems: "flex-end", paddingHorizontal: 5 }]}>
-                    <TextInput multiline placeholder='send message ....' value={chatMessage} onChangeText={setChatMessage} style={styles.input} />
-                    <Ionicons onPress={sendMessage} name="send" size={24} color="black" />
-                </View>
+                <FlatList
+                    data={allMessages}
+                    inverted
+                    renderItem={({ item }) => <Item item={item} />} />
+                <View style={styles.inputContainer}>
+                    {/* {!isImage &&  */}
+                    <View style={[styles.inputCon, { flexDirection: "row", alignItems: "flex-end", paddingHorizontal: 5 }]}>
+                        <TextInput multiline placeholder='send message ....' value={chatMessage} onChangeText={setChatMessage} style={styles.input} />
+                        <Ionicons onPress={sendMessage} name="send" size={24} color="black" />
+                    </View>
 
-                <View style={{ paddingHorizontal: 5 }}>
-                    <MaterialIcons name="add-a-photo" size={24} color="black" onPress={pickPhoto} />
+                    <View style={{ paddingHorizontal: 5 }}>
+                        <MaterialIcons name="add-a-photo" size={24} color="black" onPress={pickPhoto} />
+                    </View>
                 </View>
-            </View>
+            </>}
+
+            {openModal &&
+
+                <Pressable style={{ position: "relative" }}>
+                    <Text onPress={() => setOpenModal(V => !V)}
+                        style={{ position: "absolute", zIndex: 10, color: "#3376bc", fontSize: 30, right: 30, top: 20, fontWeight: "bold", textAlign: "right" }}>x</Text>
+                    <Image source={{ uri: photoUrl }}
+                        style={{ height: "100%", width: "100%" }} resizeMode='cover' />
+                </Pressable>
+
+            }
         </KeyboardAvoidingView>
     )
 }
