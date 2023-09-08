@@ -34,7 +34,7 @@ const Balance = () => {
 
   return (
     <View style={styles.BalanceContainer}>
-      <Text style={styles.contain1}>${balance === 0 ? "00:00" : `${balance?.toString()?.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`}</Text>
+      <Text style={styles.contain1}>${!balance ? "00:00" : balance === 0 ? "00:00" : `${balance?.toString()?.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`}</Text>
       <Text style={styles.contain2}>{coin}</Text>
     </View>
   )

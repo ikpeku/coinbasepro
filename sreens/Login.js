@@ -21,7 +21,7 @@ const Login = ({ navigation }) => {
     await SignWithEmail(email, password)
     // setIsLoading(false)
 
-    setIsLoading(false)
+    // setIsLoading(false)
   }
 
 

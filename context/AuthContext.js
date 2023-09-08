@@ -126,7 +126,7 @@ export const AuthContextprovider = ({ children }) => {
         dispatch({ type: 'LOGOUT' })
       }
 
-      return unSubquire
+      return unSubquire()
     })
   }, [])
 
