@@ -5,26 +5,37 @@ import { auth, db } from '../firebase/firebaseConfig'
 import { FlashList } from "@shopify/flash-list";
 import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import moment from 'moment';
+import { ActivityIndicator } from 'react-native-paper';
 
 const TxnHistory = () => {
   const [trnHistory, setTransaction] = useState([])
+  const [loading, setLoading] = useState(false)
 
 
 
 
   useEffect(() => {
+    setLoading(true)
     const refDoc = doc(db, "users", auth.currentUser.uid)
 
     const unsub = onSnapshot(refDoc, (snapshot) => {
       if (snapshot.exists()) {
         const { transactions } = snapshot?.data()
         setTransaction(transactions.sort((a, b) => a.time < b.time))
-
+        setLoading(false)
       }
     })
     return () => unsub()
 
   }, [])
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size={'large'} color="#3376bc" />
+      </View>
+    )
+  }
 
 
 
