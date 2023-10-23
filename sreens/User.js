@@ -330,7 +330,6 @@ const User = ({ route }) => {
               </Pressable>}
 
               {/* maunal amount input */}
-
               <View style={{ flexDirection: "row", marginVertical: 12 }}>
                 <Text style={{ fontWeight: "bold", fontSize: 18, fontFamily: "Nunito-Medium" }}>Selected Coin: </Text>
                 <View style={{ flex: 1 }}>
